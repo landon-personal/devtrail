@@ -89,6 +89,6 @@ Repo state confirmed during public beta review:
 
 ## Current Public Beta Blockers
 
-- GitHub Pages was enabled successfully, but GitHub reported the Pages build as `building` immediately after setup.
-- The Pages URL may return `404` for a few minutes while GitHub finishes the first deployment.
+- No current public beta blockers.
+- GitHub Pages was enabled successfully and the Pages URL returned `200` after the first deployment finished.
 - No Marketplace publishing was performed.
