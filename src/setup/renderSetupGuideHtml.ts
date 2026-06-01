@@ -62,6 +62,13 @@ export function renderSetupGuideHtml(model: SetupGuideModel, nonce: string): str
       color: var(--vscode-button-foreground);
     }
 
+    button.primary {
+      background: var(--vscode-button-background);
+      color: var(--vscode-button-foreground);
+      font-weight: 700;
+      text-align: center;
+    }
+
     .grid {
       display: grid;
       gap: 10px;
@@ -92,6 +99,11 @@ export function renderSetupGuideHtml(model: SetupGuideModel, nonce: string): str
       margin: 12px 0;
       padding: 12px;
     }
+
+    .finish {
+      margin-top: 18px;
+      max-width: 320px;
+    }
   </style>
 </head>
 <body>
@@ -99,6 +111,7 @@ export function renderSetupGuideHtml(model: SetupGuideModel, nonce: string): str
 
   <h2>Welcome</h2>
   <p>DevTrail helps you understand code as you learn. It explains selected code, common terminal commands, hover terms, and project setup in beginner-friendly language.</p>
+  <p class="muted">You can use DevTrail locally without AI. AI is optional and only runs after you turn it on and add your own API key.</p>
   <div class="grid">
     <div class="card">
       <h3>Local-first by default</h3>
@@ -115,6 +128,10 @@ export function renderSetupGuideHtml(model: SetupGuideModel, nonce: string): str
     <div class="card">
       <h3>What to try first</h3>
       <p>Start with hover explanations, then try explaining a small code selection or the command <code>git status</code>.</p>
+    </div>
+    <div class="card">
+      <h3>Easy access</h3>
+      <p>Use the DevTrail status bar item, keyboard shortcuts, or the editor right-click menu so you do not have to hunt through the Command Palette.</p>
     </div>
   </div>
 
@@ -155,7 +172,7 @@ export function renderSetupGuideHtml(model: SetupGuideModel, nonce: string): str
     </div>
     <div class="card">
       <h3>Explain Selection</h3>
-      <p>Highlight code and run <code>DevTrail: Explain Selection</code> to get a beginner-friendly breakdown.</p>
+      <p>Highlight code and press <code>Cmd+Alt+E</code> on Mac or <code>Ctrl+Alt+E</code> on Windows/Linux to get a beginner-friendly breakdown.</p>
     </div>
     <div class="card">
       <h3>Explain Command</h3>
@@ -165,9 +182,46 @@ export function renderSetupGuideHtml(model: SetupGuideModel, nonce: string): str
       <h3>Analyze Project</h3>
       <p>Run <code>DevTrail: Analyze Project</code> anytime to review scripts, dependencies, tools, and suggested packs.</p>
     </div>
+    <div class="card">
+      <h3>Status bar quick actions</h3>
+      <p>Click <code>$(sparkle) DevTrail</code> in the status bar to open common actions like Explain Selection, Manage Packs, and Change Explanation Level.</p>
+    </div>
+  </div>
+
+  <h2>Keyboard shortcuts</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Explain Selection</h3>
+      <p><code>Cmd+Alt+E</code> on Mac<br><code>Ctrl+Alt+E</code> on Windows/Linux</p>
+    </div>
+    <div class="card">
+      <h3>Explain Command</h3>
+      <p><code>Cmd+Alt+C</code> on Mac<br><code>Ctrl+Alt+C</code> on Windows/Linux</p>
+    </div>
+    <div class="card">
+      <h3>Open Setup Guide</h3>
+      <p><code>Cmd+Alt+D</code> on Mac<br><code>Ctrl+Alt+D</code> on Windows/Linux</p>
+    </div>
+    <div class="card">
+      <h3>Manage Packs</h3>
+      <p><code>Cmd+Alt+P</code> on Mac<br><code>Ctrl+Alt+P</code> on Windows/Linux</p>
+    </div>
+    <div class="card">
+      <h3>Change Level</h3>
+      <p><code>Cmd+Alt+L</code> on Mac<br><code>Ctrl+Alt+L</code> on Windows/Linux</p>
+    </div>
   </div>
 
   <h2>You're ready to go</h2>
+  <div class="callout">
+    <strong>Try this first:</strong>
+    <ol>
+      <li>Open any code file.</li>
+      <li>Highlight a few lines.</li>
+      <li>Press <code>Cmd+Alt+E</code> on Mac or <code>Ctrl+Alt+E</code> on Windows/Linux.</li>
+      <li>Or right-click the selection and choose <code>DevTrail: Explain Selection</code>.</li>
+    </ol>
+  </div>
   <ul>
     <li>Open a code file and hover over a term.</li>
     <li>Highlight code and run <code>DevTrail: Explain Selection</code>.</li>
@@ -175,6 +229,9 @@ export function renderSetupGuideHtml(model: SetupGuideModel, nonce: string): str
     <li>Install a recommended pack if DevTrail suggests one for your project.</li>
     <li>Run <code>DevTrail: Analyze Project</code> anytime.</li>
   </ul>
+  <div class="finish">
+    <button type="button" class="primary" id="finish-setup">Finish Setup</button>
+  </div>
 
   <script nonce="${escapeHtml(nonce)}">
     const vscode = acquireVsCodeApi();
@@ -210,6 +267,12 @@ export function renderSetupGuideHtml(model: SetupGuideModel, nonce: string): str
           type: button.dataset.packAction,
           packId: button.dataset.packId
         });
+      });
+    });
+
+    document.getElementById("finish-setup")?.addEventListener("click", () => {
+      vscode.postMessage({
+        type: "finishSetup"
       });
     });
   </script>

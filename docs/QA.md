@@ -1,18 +1,41 @@
 # DevTrail Manual QA
 
-Use this checklist before a v0.4 beta build.
+Use this checklist before a v0.5 beta build.
 
 ## Setup Guide
 
 1. Press F5 from the DevTrail repo.
-2. In the Extension Development Host, run `DevTrail: Open Setup Guide`.
-3. Confirm the guide opens and shows Welcome, Choose experience level, Scan project, Recommended packs, Enable learning features, and You're ready to go.
-4. Choose each experience level and confirm the selected state updates.
-5. Confirm Brand new maps to `devtrail.explanationLevel: beginner`.
-6. Confirm Know the basics maps to `devtrail.explanationLevel: learning`.
-7. Confirm Comfortable but learning tools/libraries maps to `devtrail.explanationLevel: advanced`.
-8. If recommended packs appear, click Install on one pack and confirm it changes to Installed.
-9. Close and reopen the guide. Confirm the selected level is still shown.
+2. In a fresh Extension Development Host profile, confirm DevTrail opens the setup guide automatically on first activation.
+3. Reload the Extension Development Host and confirm setup does not reopen repeatedly.
+4. Run `DevTrail: Open Setup Guide` manually and confirm setup can still be opened anytime.
+5. Confirm the guide opens and shows Welcome, Choose experience level, Scan project, Recommended packs, Enable learning features, Keyboard shortcuts, and You're ready to go.
+6. Confirm the guide explains local mode, optional AI, packs, keyboard shortcuts, the status bar, and what to try first.
+7. Confirm the `Try this first` section tells users to highlight code and press `Cmd+Alt+E` or `Ctrl+Alt+E`.
+8. Confirm the final button says `Finish Setup`.
+9. Click `Finish Setup` and confirm DevTrail shows: `DevTrail is ready. Try highlighting code and pressing the Explain shortcut.`
+10. Reload VS Code and confirm setup does not auto-open after completion.
+11. Choose each experience level and confirm the selected state updates.
+12. Confirm Brand new maps to `devtrail.explanationLevel: beginner`.
+13. Confirm Know the basics maps to `devtrail.explanationLevel: learning`.
+14. Confirm Comfortable but learning tools/libraries maps to `devtrail.explanationLevel: advanced`.
+15. If recommended packs appear, click Install on one pack and confirm it changes to Installed.
+16. Close and reopen the guide. Confirm the selected level is still shown.
+
+## Quick Access And Shortcuts
+
+1. Confirm the VS Code status bar shows `$(sparkle) DevTrail`.
+2. Click the status bar item.
+3. Confirm the quick pick shows Explain Selection, Explain Command, Open Setup Guide, Manage Packs, Change Explanation Level, Analyze Project, and Test AI Formatting.
+4. Run `DevTrail: Quick Start` from the Command Palette and confirm it opens the same quick pick.
+5. Select `Open Setup Guide` from the quick pick and confirm the setup guide opens.
+6. Select code in an editor, press `Cmd+Alt+E` on Mac or `Ctrl+Alt+E` on Windows/Linux, and confirm Explain Selection runs.
+7. Press `Cmd+Alt+C` on Mac or `Ctrl+Alt+C` on Windows/Linux and confirm Explain Command prompts for a terminal command.
+8. Press `Cmd+Alt+D` on Mac or `Ctrl+Alt+D` on Windows/Linux and confirm Open Setup Guide runs.
+9. Press `Cmd+Alt+P` on Mac or `Ctrl+Alt+P` on Windows/Linux and confirm Manage Packs opens.
+10. Press `Cmd+Alt+L` on Mac or `Ctrl+Alt+L` on Windows/Linux and confirm Change Explanation Level opens.
+11. Open VS Code Keyboard Shortcuts, search for `DevTrail`, and confirm the shortcuts are editable.
+12. Right-click selected code and confirm `DevTrail: Explain Selection` appears.
+13. Right-click in an editor and confirm `DevTrail: Change Explanation Level` and `DevTrail: Open Setup Guide` appear.
 
 ## Explanation Levels
 

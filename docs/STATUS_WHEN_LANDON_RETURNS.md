@@ -2,93 +2,72 @@
 
 ## What Changed
 
-- Bumped DevTrail to `0.4.0-beta.0`.
-- Completed a reliability pass across Command Palette commands.
-- Confirmed command titles and command IDs are consistent between `package.json` and extension registration.
-- Improved friendly fallback handling for:
-  - no workspace
-  - no active editor
-  - no selected text
-  - unsupported command explanations
-  - AI enabled but no key
-  - AI request failure
-  - AI formatting issues
-  - oversized selections
-  - sensitive-looking selections
-  - missing or invalid `package.json`
-  - missing or malformed bundled pack registry/command pack JSON
-- Improved wording in explanation webviews, Manage Packs, AI formatting diagnostics, and user-facing messages.
-- Updated README and beta docs for accuracy.
-- Added `docs/RELEASE_NOTES_v0.4.0-beta.0.md`.
+- Bumped DevTrail to `0.5.0-beta.0`.
+- Added first-install setup guide auto-open using VS Code globalState.
+- Added setup completion state with a `Finish Setup` button.
+- Added `DevTrail: Quick Start`.
+- Added a `$(sparkle) DevTrail` status bar item that opens quick actions.
+- Added default keyboard shortcuts for common actions.
+- Added editor right-click menu entries for Explain Selection, Change Explanation Level, and Open Setup Guide.
+- Improved setup guide wording for local mode, optional AI, packs, shortcuts, status bar access, and what to try first.
+- Added `docs/SHORTCUTS.md`.
+- Added `docs/RELEASE_NOTES_v0.5.0-beta.0.md`.
+- Updated README and QA docs for first-run setup, shortcuts, status bar quick access, and context menus.
 
 ## Verification Results
 
 - `npm run compile`: passed.
-- `node out/ai/parseAIExplanation.test.js`: passed.
 - `npm run package`: passed.
-- Generated VSIX: `devtrail-0.4.0-beta.0.vsix`.
+- Generated VSIX: `devtrail-0.5.0-beta.0.vsix`.
 - VSIX install: passed.
-- Public beta review docs added locally:
-  - `docs/PUBLIC_BETA_GO_NO_GO.md`
-  - `docs/TESTER_INVITE.md`
-  - `docs/MAKE_PUBLIC_STEPS.md`
 
 Installed with:
 
 ```sh
-code --install-extension /Users/landon/devtrail/devtrail-0.4.0-beta.0.vsix --force
+code --install-extension /Users/landon/devtrail/devtrail-0.5.0-beta.0.vsix --force
 ```
 
-## Exact Next Manual Steps
+## Exact First Thing To Do In VS Code
 
-After final verification, manually test in VS Code:
+1. Open VS Code.
+2. Confirm DevTrail is installed.
+3. Run `DevTrail: Open Setup Guide`.
+4. Click `Finish Setup`.
+5. Open a code file, highlight a few lines, and press `Cmd+Alt+E` on Mac or `Ctrl+Alt+E` on Windows/Linux.
 
-1. Run `DevTrail: Open Setup Guide`.
-2. Run `DevTrail: Explain Selection` with no editor, no selected text, and a valid small selection.
-3. Run `DevTrail: Explain Command` with `git status`, an empty command, and an unsupported command.
-4. Run `DevTrail: Manage Packs`.
-5. Run `DevTrail: Analyze Project` with no workspace, no `package.json`, invalid `package.json`, and valid `package.json`.
-6. If AI is configured, run `DevTrail: Test AI Formatting`.
-7. Test AI enabled with no API key.
-8. Test oversized and sensitive-looking selection fallbacks.
-9. Follow `docs/RELEASE_CHECKLIST.md` before any GitHub prerelease.
+For a true fresh-install test, use a clean VS Code profile so globalState is empty. Existing installs may not auto-open setup if older DevTrail state is already present.
+
+## Manual QA To Run Next
+
+1. Confirm first-install setup auto-opens in a clean profile.
+2. Confirm setup does not reopen repeatedly after reload.
+3. Confirm `Finish Setup` stores completion and shows the ready message.
+4. Confirm the status bar item opens the Quick Start menu.
+5. Confirm `DevTrail: Quick Start` opens the same menu.
+6. Confirm shortcuts:
+   - Explain Selection: `Cmd+Alt+E` / `Ctrl+Alt+E`
+   - Explain Command: `Cmd+Alt+C` / `Ctrl+Alt+C`
+   - Open Setup Guide: `Cmd+Alt+D` / `Ctrl+Alt+D`
+   - Manage Packs: `Cmd+Alt+P` / `Ctrl+Alt+P`
+   - Change Explanation Level: `Cmd+Alt+L` / `Ctrl+Alt+L`
+7. Confirm right-click selected code shows `DevTrail: Explain Selection`.
+8. Confirm right-click editor shows `DevTrail: Change Explanation Level` and `DevTrail: Open Setup Guide`.
+9. Follow `docs/QA.md` before any v0.5 GitHub prerelease.
 
 ## Blockers
 
-No blockers found during compile, parser test, package, or install.
+No blockers found during compile, package, or install.
 
 ## Public Actions
 
-The public beta docs were committed and pushed in commit `ea3d825` with message `Prepare public beta docs`.
+No commit, push, GitHub release, Marketplace publish, repo visibility change, or GitHub Pages change was performed during the v0.5 local prep pass.
 
-Repo visibility and GitHub Pages were updated after final safety checks passed.
-
-Repo state confirmed during public beta review:
+Current public beta state from the previous release:
 
 - Repo: `landon-personal/devtrail`
 - Visibility: `PUBLIC`
-- Current prerelease: `v0.4.0-beta.0`
-- Attached asset: `devtrail-0.4.0-beta.0.vsix`
-
-## Public Beta Status
-
-- Repo public: yes
-- Release public: yes
-- GitHub Pages enabled: yes
-- Pages source: `main` branch, `/docs` folder
-- Pages URL: `https://landon-personal.github.io/devtrail/`
-- Release URL: `https://github.com/landon-personal/devtrail/releases/tag/v0.4.0-beta.0`
-- Latest release URL: `https://github.com/landon-personal/devtrail/releases/latest`
+- Current public prerelease: `v0.4.0-beta.0`
+- Current public VSIX asset: `devtrail-0.4.0-beta.0.vsix`
 - Repo URL: `https://github.com/landon-personal/devtrail`
-
-## First Links To Open
-
-1. `https://github.com/landon-personal/devtrail`
-2. `https://github.com/landon-personal/devtrail/releases/tag/v0.4.0-beta.0`
-3. `https://landon-personal.github.io/devtrail/`
-
-## Current Public Beta Blockers
-
-- No current public beta blockers.
-- GitHub Pages was enabled successfully and the Pages URL returned `200` after the first deployment finished.
-- No Marketplace publishing was performed.
+- Release URL: `https://github.com/landon-personal/devtrail/releases/tag/v0.4.0-beta.0`
+- Pages URL: `https://landon-personal.github.io/devtrail/`

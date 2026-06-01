@@ -14,6 +14,8 @@ It is built for people learning JavaScript, TypeScript, React, Git, npm, and mod
 
 ## Current Beta Features
 
+- First-install setup guide auto-launch so new testers see what to do right away.
+- `DevTrail: Quick Start`: one menu for common actions from the Command Palette or status bar.
 - `DevTrail: Open Setup Guide`: guided onboarding for experience level, project scan, suggested packs, and first steps.
 - `DevTrail: Explain Selection`: explains selected JavaScript, TypeScript, React, or JSX code.
 - Local React/JSX explanations for components, props, children, hooks, routes, loading states, protected routes, wrapper components, and JSX list rendering.
@@ -23,6 +25,7 @@ It is built for people learning JavaScript, TypeScript, React, Git, npm, and mod
 - `DevTrail: Refresh Project Scan`: reruns project analysis after dependencies change.
 - `DevTrail: Manage Packs`: installs, uninstalls, and resets bundled local explanation packs.
 - `DevTrail: Change Explanation Level`: switches between Beginner, Learning, and Advanced explanation depth.
+- Default keyboard shortcuts and editor right-click actions for common DevTrail commands.
 - Optional AI explanations: disabled by default, user-enabled only, with API keys stored in VS Code SecretStorage.
 
 ## Install From VSIX
@@ -40,20 +43,49 @@ DevTrail is not on the VS Code Marketplace yet. Beta testers install it from a `
 Command-line install:
 
 ```sh
-code --install-extension devtrail-0.4.0-beta.0.vsix
+code --install-extension devtrail-0.5.0-beta.0.vsix
 ```
 
 ## First Run
 
 After installing:
 
-1. Run `DevTrail: Open Setup Guide`.
+1. DevTrail opens the setup guide automatically the first time it activates.
 2. Choose your experience level.
 3. Scan your project if a workspace is open.
 4. Install recommended packs.
-5. Try hovering over code terms.
-6. Highlight a small code block and run `DevTrail: Explain Selection`.
-7. Try `DevTrail: Explain Command` with `git status`.
+5. Click `Finish Setup`.
+6. Try hovering over code terms.
+7. Highlight a small code block and press `Cmd+Alt+E` on Mac or `Ctrl+Alt+E` on Windows/Linux.
+8. You can also right-click selected code and choose `DevTrail: Explain Selection`.
+9. Try `DevTrail: Explain Command` with `git status`.
+
+You can reopen setup anytime with `DevTrail: Open Setup Guide` or by clicking `$(sparkle) DevTrail` in the status bar.
+
+## Keyboard Shortcuts And Quick Access
+
+DevTrail adds default shortcuts that users can edit in VS Code Keyboard Shortcuts.
+
+| Action | Mac | Windows/Linux |
+| --- | --- | --- |
+| Explain Selection | `Cmd+Alt+E` | `Ctrl+Alt+E` |
+| Explain Command | `Cmd+Alt+C` | `Ctrl+Alt+C` |
+| Open Setup Guide | `Cmd+Alt+D` | `Ctrl+Alt+D` |
+| Manage Packs | `Cmd+Alt+P` | `Ctrl+Alt+P` |
+| Change Explanation Level | `Cmd+Alt+L` | `Ctrl+Alt+L` |
+
+Other quick access paths:
+
+- Click `$(sparkle) DevTrail` in the VS Code status bar.
+- Run `DevTrail: Quick Start`.
+- Right-click selected code and choose `DevTrail: Explain Selection`.
+- Right-click in the editor to change explanation level or open setup.
+
+To customize shortcuts:
+
+1. Open VS Code Keyboard Shortcuts.
+2. Search for `DevTrail`.
+3. Change or remove any default keybinding.
 
 ## Explanation Levels
 

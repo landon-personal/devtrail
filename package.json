@@ -2,7 +2,7 @@
   "name": "devtrail",
   "displayName": "DevTrail",
   "description": "A local-first learning companion that explains code, terminal commands, and project setup for beginners.",
-  "version": "0.4.0-beta.0",
+  "version": "0.5.0-beta.0",
   "publisher": "devtrail",
   "license": "MIT",
   "private": true,
@@ -40,6 +40,7 @@
     "onCommand:devtrail.managePacks",
     "onCommand:devtrail.installSuggestedPacks",
     "onCommand:devtrail.resetInstalledPacks",
+    "onCommand:devtrail.quickStart",
     "onCommand:devtrail.openSetupGuide",
     "onLanguage:javascript",
     "onLanguage:javascriptreact",
@@ -120,11 +121,63 @@
         "category": "DevTrail"
       },
       {
+        "command": "devtrail.quickStart",
+        "title": "DevTrail: Quick Start",
+        "category": "DevTrail"
+      },
+      {
         "command": "devtrail.openSetupGuide",
         "title": "DevTrail: Open Setup Guide",
         "category": "DevTrail"
       }
     ],
+    "keybindings": [
+      {
+        "command": "devtrail.explainSelection",
+        "key": "ctrl+alt+e",
+        "mac": "cmd+alt+e",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "devtrail.explainCommand",
+        "key": "ctrl+alt+c",
+        "mac": "cmd+alt+c"
+      },
+      {
+        "command": "devtrail.openSetupGuide",
+        "key": "ctrl+alt+d",
+        "mac": "cmd+alt+d"
+      },
+      {
+        "command": "devtrail.managePacks",
+        "key": "ctrl+alt+p",
+        "mac": "cmd+alt+p"
+      },
+      {
+        "command": "devtrail.changeExplanationLevel",
+        "key": "ctrl+alt+l",
+        "mac": "cmd+alt+l"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "devtrail.explainSelection",
+          "when": "editorHasSelection",
+          "group": "navigation@1"
+        },
+        {
+          "command": "devtrail.changeExplanationLevel",
+          "when": "editorTextFocus",
+          "group": "navigation@2"
+        },
+        {
+          "command": "devtrail.openSetupGuide",
+          "when": "editorTextFocus",
+          "group": "navigation@3"
+        }
+      ]
+    },
     "configuration": {
       "title": "DevTrail",
       "properties": {

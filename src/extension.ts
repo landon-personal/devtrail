@@ -51,6 +51,8 @@ import {
 } from "./webview/renderExplanationHtml";
 
 const WELCOME_PROMPT_STATE_KEY = "devtrail.welcomePromptShown";
+const AUTO_OPEN_SETUP_STATE_KEY = "devtrail.hasAutoOpenedSetup";
+const SETUP_COMPLETED_STATE_KEY = "devtrail.setupCompleted";
 const DEFAULT_AI_MODEL = "gpt-5-mini";
 const DEFAULT_AI_STRUCTURED_MODEL = "gpt-4o-mini";
 const FAST_AI_MODEL = "gpt-5-nano";
@@ -81,6 +83,10 @@ interface AIWaitActionMessage {
   type: "keepWaiting" | "useLocalExplanation";
 }
 
+interface QuickActionItem extends vscode.QuickPickItem {
+  command: string;
+}
+
 interface AIFormattingDiagnosticPanelModel {
   sdkVersion: string;
   configuredNormalModel: string;
@@ -95,6 +101,7 @@ interface AIFormattingDiagnosticPanelModel {
 export function activate(context: vscode.ExtensionContext): void {
   registerHoverProvider(context);
   registerProjectDependencyWatcher(context);
+  registerDevTrailStatusBar(context);
 
   // Commands are the entry points users run from the Command Palette.
   const explainSelectionCommand = vscode.commands.registerCommand("devtrail.explainSelection", async () => {
@@ -473,6 +480,10 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.window.showInformationMessage("DevTrail reset installed packs. JavaScript basics still work as a safe fallback.");
   });
 
+  const quickStartCommand = vscode.commands.registerCommand("devtrail.quickStart", async () => {
+    await openQuickStartMenu();
+  });
+
   const openSetupGuideCommand = vscode.commands.registerCommand("devtrail.openSetupGuide", async () => {
     const workspaceFolder = getCurrentWorkspaceFolder();
     const registryPacks = await listAvailablePacks(context);
@@ -510,6 +521,15 @@ export function activate(context: vscode.ExtensionContext): void {
       if (isPackActionMessage(message)) {
         await applyPackAction(context, message);
         await refreshPanel();
+        return;
+      }
+
+      if (isFinishSetupMessage(message)) {
+        await context.globalState.update(SETUP_COMPLETED_STATE_KEY, true);
+        await context.globalState.update(AUTO_OPEN_SETUP_STATE_KEY, true);
+        vscode.window.showInformationMessage(
+          "DevTrail is ready. Try highlighting code and pressing the Explain shortcut."
+        );
       }
     });
   });
@@ -529,10 +549,11 @@ export function activate(context: vscode.ExtensionContext): void {
     managePacksCommand,
     installSuggestedPacksCommand,
     resetInstalledPacksCommand,
+    quickStartCommand,
     openSetupGuideCommand
   );
 
-  void showWelcomePromptOnce(context);
+  void autoOpenSetupGuideOnFirstInstall(context);
 }
 
 export function deactivate(): void {
@@ -574,6 +595,73 @@ function createAIFormattingTestDocument(
     fileName: testUri.fsPath,
     uri: testUri
   };
+}
+
+function registerDevTrailStatusBar(context: vscode.ExtensionContext): void {
+  const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+  statusBarItem.text = "$(sparkle) DevTrail";
+  statusBarItem.tooltip = "Open DevTrail quick actions";
+  statusBarItem.command = "devtrail.quickStart";
+  statusBarItem.show();
+
+  context.subscriptions.push(statusBarItem);
+}
+
+async function openQuickStartMenu(): Promise<void> {
+  const selectedAction = await vscode.window.showQuickPick(
+    [
+      {
+        label: "Open Setup Guide",
+        detail: "Choose your level, scan your project, and see what to try first.",
+        command: "devtrail.openSetupGuide"
+      },
+      {
+        label: "Explain selected code",
+        detail: "Highlight a few lines first, then DevTrail explains them.",
+        command: "devtrail.explainSelection"
+      },
+      {
+        label: "Explain a terminal command",
+        detail: "Try git status, npm install, or npm run dev.",
+        command: "devtrail.explainCommand"
+      },
+      {
+        label: "Install recommended packs",
+        detail: "Enable bundled local packs suggested for this project.",
+        command: "devtrail.installSuggestedPacks"
+      },
+      {
+        label: "Manage Packs",
+        detail: "Install, uninstall, or reset bundled DevTrail packs.",
+        command: "devtrail.managePacks"
+      },
+      {
+        label: "Change explanation level",
+        detail: "Choose Beginner, Learning, or Advanced wording.",
+        command: "devtrail.changeExplanationLevel"
+      },
+      {
+        label: "Analyze Project",
+        detail: "Explain package.json, scripts, dependencies, tools, and suggested packs.",
+        command: "devtrail.analyzeProject"
+      },
+      {
+        label: "Test AI formatting",
+        detail: "Optional: check AI structured formatting with a tiny built-in sample.",
+        command: "devtrail.testAIFormatting"
+      }
+    ] satisfies QuickActionItem[],
+    {
+      title: "DevTrail: Quick Start",
+      placeHolder: "What would you like to do?"
+    }
+  );
+
+  if (!selectedAction) {
+    return;
+  }
+
+  await vscode.commands.executeCommand(selectedAction.command);
 }
 
 function openProjectAnalysisPanel(analysis: ProjectAnalysisResult): void {
@@ -1105,24 +1193,18 @@ function showProjectScanProblem(status: "noPackageJson" | "invalidPackageJson"):
   vscode.window.showErrorMessage("DevTrail found package.json, but it is not valid JSON right now. Fix the file, then run the scan again.");
 }
 
-async function showWelcomePromptOnce(context: vscode.ExtensionContext): Promise<void> {
-  const hasShownWelcome = context.globalState.get<boolean>(WELCOME_PROMPT_STATE_KEY, false);
+async function autoOpenSetupGuideOnFirstInstall(context: vscode.ExtensionContext): Promise<void> {
+  const setupCompleted = context.globalState.get<boolean>(SETUP_COMPLETED_STATE_KEY, false);
+  const hasAutoOpenedSetup = context.globalState.get<boolean>(AUTO_OPEN_SETUP_STATE_KEY, false);
+  const hasSeenLegacyWelcomePrompt = context.globalState.get<boolean>(WELCOME_PROMPT_STATE_KEY, false);
 
-  if (hasShownWelcome) {
+  if (setupCompleted || hasAutoOpenedSetup || hasSeenLegacyWelcomePrompt) {
     return;
   }
 
-  await context.globalState.update(WELCOME_PROMPT_STATE_KEY, true);
+  await context.globalState.update(AUTO_OPEN_SETUP_STATE_KEY, true);
 
-  const selectedAction = await vscode.window.showInformationMessage(
-    "Welcome to DevTrail! Want to open the setup guide?",
-    "Open Setup Guide",
-    "Not Now"
-  );
-
-  if (selectedAction === "Open Setup Guide") {
-    await vscode.commands.executeCommand("devtrail.openSetupGuide");
-  }
+  await vscode.commands.executeCommand("devtrail.openSetupGuide");
 }
 
 function isSetExperienceLevelMessage(
@@ -1140,4 +1222,12 @@ function isSetExperienceLevelMessage(
       maybeMessage.levelId === "basics" ||
       maybeMessage.levelId === "comfortable"
     );
+}
+
+function isFinishSetupMessage(message: unknown): message is { type: "finishSetup" } {
+  if (!message || typeof message !== "object") {
+    return false;
+  }
+
+  return (message as { type?: unknown }).type === "finishSetup";
 }
