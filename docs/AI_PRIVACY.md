@@ -14,7 +14,9 @@ DevTrail is local-first by default. Local explanations, hover explanations, comm
 
 DevTrail does not store API keys in `package.json`, VS Code settings JSON, source files, logs, or webviews.
 
-The recommended AI model default is `gpt-5-mini` because it balances explanation quality and speed. Users who prefer the fastest responses can set `devtrail.ai.speedMode` to `fast`, which uses `gpt-5-nano` unless they explicitly set `devtrail.ai.model`.
+The recommended general AI model default is `gpt-5-mini` because it balances explanation quality and speed. Users who prefer the fastest responses can set `devtrail.ai.speedMode` to `fast`, which uses `gpt-5-nano` unless they explicitly set `devtrail.ai.model`.
+
+For structured explanation formatting, DevTrail uses Chat Completions structured parsing with `devtrail.ai.structuredModel` and a default of `gpt-4o-mini`. DevTrail sends the same selected code to this structured parsing model only when AI mode is enabled, an API key is configured, and the selected code passes safety checks.
 
 ## When Code May Be Sent To OpenAI
 
@@ -28,6 +30,8 @@ Selected code may be sent to OpenAI only when all of these are true:
 If any condition is not met, DevTrail uses local explanations instead.
 
 DevTrail also keeps selected AI requests intentionally small. If the selection is longer than `devtrail.ai.maxSelectedCharacters` (default `6000`), DevTrail does not send it to AI and explains it locally.
+
+AI explanations use `chat.completions.parse` with schema-constrained output first. If structured parsing fails, DevTrail may try one JSON-only `chat.completions.create` fallback request using the same structured model. If that also fails, DevTrail uses the local explanation.
 
 ## What Context May Be Sent
 

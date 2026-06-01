@@ -1,7 +1,18 @@
 import * as vscode from "vscode";
-import { clearOpenAIApiKey, getOpenAIApiKey, setOpenAIApiKey } from "./ai/openaiClient";
+import {
+  clearOpenAIApiKey,
+  getOpenAIApiKey,
+  getOpenAISDKVersion,
+  setOpenAIApiKey
+} from "./ai/openaiClient";
 import { canSendSelectionToAI } from "./ai/safety";
-import { AIExplanationFormatError, explainSelectionWithAI } from "./ai/explainWithAI";
+import {
+  AIExplanationFormatError,
+  AIExplanationAttemptDiagnostic,
+  explainSelectionWithAI,
+  explainSelectionWithAIWithDiagnostics,
+  getAIFormattingFailureLabel
+} from "./ai/explainWithAI";
 import { explainCommand } from "./explain/explainCommand";
 import {
   ExplanationLevel,
@@ -41,15 +52,18 @@ import {
 
 const WELCOME_PROMPT_STATE_KEY = "devtrail.welcomePromptShown";
 const DEFAULT_AI_MODEL = "gpt-5-mini";
+const DEFAULT_AI_STRUCTURED_MODEL = "gpt-4o-mini";
 const FAST_AI_MODEL = "gpt-5-nano";
 const DEFAULT_AI_SLOW_WARNING_MS = 5000;
 const DEFAULT_AI_MAX_SELECTED_CHARACTERS = 6000;
+const AI_FORMATTING_TEST_CODE = "const numbers = [1, 2, 3];\nconst doubled = numbers.map(n => n * 2);";
 
 type AISpeedMode = "balanced" | "fast";
 
 interface AISettings {
   enabled: boolean;
   model: string;
+  structuredModel: string;
   includeProjectContext: boolean;
   slowWarningMs: number;
   maxSelectedCharacters: number;
@@ -65,6 +79,17 @@ interface PackActionMessage {
 
 interface AIWaitActionMessage {
   type: "keepWaiting" | "useLocalExplanation";
+}
+
+interface AIFormattingDiagnosticPanelModel {
+  sdkVersion: string;
+  configuredNormalModel: string;
+  configuredStructuredModel: string;
+  actualStructuredModel: string;
+  aiEnabled: boolean;
+  apiKeyExists: boolean;
+  diagnostics: AIExplanationAttemptDiagnostic[];
+  error?: AIExplanationFormatError;
 }
 
 export function activate(context: vscode.ExtensionContext): void {
@@ -275,6 +300,115 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.window.showInformationMessage("DevTrail cleared the stored OpenAI API key.");
   });
 
+  const testAIFormattingCommand = vscode.commands.registerCommand("devtrail.testAIFormatting", async () => {
+    const aiSettings = getAISettings();
+
+    if (!aiSettings.enabled) {
+      vscode.window.showWarningMessage("Enable DevTrail AI explanations before running the formatting test.");
+      return;
+    }
+
+    const apiKey = await getOpenAIApiKey(context);
+
+    if (!apiKey) {
+      const selectedAction = await vscode.window.showInformationMessage(
+        "DevTrail needs an OpenAI API key before it can test AI formatting.",
+        "Set OpenAI API Key"
+      );
+
+      if (selectedAction === "Set OpenAI API Key") {
+        await vscode.commands.executeCommand("devtrail.setOpenAIApiKey");
+      }
+
+      return;
+    }
+
+    try {
+      const diagnosticResult = await vscode.window.withProgress(
+        {
+          location: vscode.ProgressLocation.Notification,
+          title: "DevTrail is testing AI formatting...",
+          cancellable: false
+        },
+        () => explainSelectionWithAIWithDiagnostics(AI_FORMATTING_TEST_CODE, {
+          extensionContext: context,
+          document: createAIFormattingTestDocument(context),
+          apiKey,
+          structuredModel: resolveStructuredAIModel(aiSettings),
+          includeProjectContext: false,
+          explanationLevel: aiSettings.explanationLevel
+        }, {
+          includeOutputTextPreview: true
+        })
+      );
+
+      if (!diagnosticResult.explanation) {
+        openAIFormattingDiagnosticsPanel({
+          sdkVersion: getOpenAISDKVersion(),
+          configuredNormalModel: aiSettings.model,
+          configuredStructuredModel: aiSettings.structuredModel,
+          actualStructuredModel: resolveStructuredAIModel(aiSettings),
+          aiEnabled: aiSettings.enabled,
+          apiKeyExists: true,
+          diagnostics: diagnosticResult.diagnostics,
+          error: diagnosticResult.error
+        });
+        vscode.window.showErrorMessage(
+          `DevTrail AI formatting test failed: ${getAIFormattingFailureLabel(diagnosticResult.error?.category ?? "unknown-ai-formatting-failure")}.`
+        );
+        return;
+      }
+
+      const panel = vscode.window.createWebviewPanel(
+        "devtrailAIFormattingTest",
+        "DevTrail AI Formatting Test",
+        vscode.ViewColumn.Beside,
+        {
+          enableScripts: false
+        }
+      );
+
+      panel.webview.html = renderExplanationHtml(diagnosticResult.explanation, AI_FORMATTING_TEST_CODE);
+      vscode.window.showInformationMessage(
+        diagnosticResult.recoveredWithJsonFallback
+          ? "DevTrail AI formatting recovered with JSON fallback."
+          : "DevTrail AI structured formatting test succeeded."
+      );
+    } catch (error) {
+      if (error instanceof AIExplanationFormatError) {
+        openAIFormattingDiagnosticsPanel({
+          sdkVersion: getOpenAISDKVersion(),
+          configuredNormalModel: aiSettings.model,
+          configuredStructuredModel: aiSettings.structuredModel,
+          actualStructuredModel: resolveStructuredAIModel(aiSettings),
+          aiEnabled: aiSettings.enabled,
+          apiKeyExists: true,
+          diagnostics: [],
+          error
+        });
+        vscode.window.showErrorMessage(
+          `DevTrail AI formatting test failed: ${getAIFormattingFailureLabel(error.category)}.`
+        );
+        return;
+      }
+
+      if (!isAbortLikeError(error)) {
+        openAIFormattingDiagnosticsPanel({
+          sdkVersion: getOpenAISDKVersion(),
+          configuredNormalModel: aiSettings.model,
+          configuredStructuredModel: aiSettings.structuredModel,
+          actualStructuredModel: resolveStructuredAIModel(aiSettings),
+          aiEnabled: aiSettings.enabled,
+          apiKeyExists: true,
+          diagnostics: []
+        });
+        vscode.window.showWarningMessage(
+          `DevTrail AI formatting test failed: ${getAIFormattingFailureLabel("unknown-ai-formatting-failure")}.`
+        );
+      }
+    }
+  });
+
   const managePacksCommand = vscode.commands.registerCommand("devtrail.managePacks", async () => {
     const panel = vscode.window.createWebviewPanel(
       "devtrailManagePacks",
@@ -391,6 +525,7 @@ export function activate(context: vscode.ExtensionContext): void {
     disableAICommand,
     setOpenAIApiKeyCommand,
     clearOpenAIApiKeyCommand,
+    testAIFormattingCommand,
     managePacksCommand,
     installSuggestedPacksCommand,
     resetInstalledPacksCommand,
@@ -429,6 +564,18 @@ function createNonce(): string {
   return nonce;
 }
 
+function createAIFormattingTestDocument(
+  context: vscode.ExtensionContext
+): Pick<vscode.TextDocument, "languageId" | "fileName" | "uri"> {
+  const testUri = vscode.Uri.joinPath(context.extensionUri, "devtrail-ai-formatting-test.js");
+
+  return {
+    languageId: "javascript",
+    fileName: testUri.fsPath,
+    uri: testUri
+  };
+}
+
 function openProjectAnalysisPanel(analysis: ProjectAnalysisResult): void {
   const panel = vscode.window.createWebviewPanel(
     "devtrailProjectAnalysis",
@@ -440,6 +587,118 @@ function openProjectAnalysisPanel(analysis: ProjectAnalysisResult): void {
   );
 
   panel.webview.html = renderProjectAnalysisHtml(analysis);
+}
+
+function openAIFormattingDiagnosticsPanel(model: AIFormattingDiagnosticPanelModel): void {
+  const panel = vscode.window.createWebviewPanel(
+    "devtrailAIFormattingDiagnostics",
+    "DevTrail AI Formatting Diagnostics",
+    vscode.ViewColumn.Beside,
+    {
+      enableScripts: false
+    }
+  );
+
+  panel.webview.html = renderAIFormattingDiagnosticsHtml(model);
+}
+
+function renderAIFormattingDiagnosticsHtml(model: AIFormattingDiagnosticPanelModel): string {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevTrail AI Formatting Diagnostics</title>
+  <style>
+    body {
+      color: var(--vscode-editor-foreground);
+      background: var(--vscode-editor-background);
+      font-family: var(--vscode-font-family);
+      line-height: 1.5;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 1.35rem;
+      margin: 0 0 18px;
+    }
+
+    h2 {
+      border-bottom: 1px solid var(--vscode-panel-border);
+      font-size: 1rem;
+      margin-top: 24px;
+      padding-bottom: 6px;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    pre {
+      background: var(--vscode-textCodeBlock-background);
+      border-radius: 6px;
+      overflow: auto;
+      padding: 12px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>DevTrail AI Formatting Diagnostics</h1>
+  <p>This diagnostic is for the hardcoded formatting test only. It does not show API keys or project code.</p>
+
+  <h2>Environment</h2>
+  <ul>
+    <li><strong>OpenAI SDK version:</strong> ${escapeDiagnosticHtml(model.sdkVersion)}</li>
+    <li><strong>Configured normal model:</strong> ${escapeDiagnosticHtml(model.configuredNormalModel)}</li>
+    <li><strong>Configured structured model:</strong> ${escapeDiagnosticHtml(model.configuredStructuredModel)}</li>
+    <li><strong>Actual structured model:</strong> ${escapeDiagnosticHtml(model.actualStructuredModel)}</li>
+    <li><strong>AI enabled:</strong> ${model.aiEnabled ? "true" : "false"}</li>
+    <li><strong>API key exists:</strong> ${model.apiKeyExists ? "true" : "false"}</li>
+    <li><strong>Final category:</strong> ${escapeDiagnosticHtml(getAIFormattingFailureLabel(model.error?.category ?? "unknown-ai-formatting-failure"))}</li>
+    <li><strong>Validation reason:</strong> ${escapeDiagnosticHtml(model.error?.validationFailureReason ?? "none")}</li>
+  </ul>
+
+  <h2>Attempts</h2>
+  ${model.diagnostics.length > 0 ? model.diagnostics.map(renderAIFormattingAttemptHtml).join("") : "<p>No response diagnostics were available.</p>"}
+</body>
+</html>`;
+}
+
+function renderAIFormattingAttemptHtml(attempt: AIExplanationAttemptDiagnostic): string {
+  const shape = attempt.responseShape;
+
+  return `<section>
+    <h3>${escapeDiagnosticHtml(attempt.attempt)}</h3>
+    <ul>
+      <li><strong>Request method:</strong> ${escapeDiagnosticHtml(attempt.requestMethod)}</li>
+      <li><strong>Model used:</strong> ${escapeDiagnosticHtml(attempt.model)}</li>
+      <li><strong>Failure category:</strong> ${escapeDiagnosticHtml(attempt.failureCategory ? getAIFormattingFailureLabel(attempt.failureCategory) : "none")}</li>
+      <li><strong>Validation reason:</strong> ${escapeDiagnosticHtml(attempt.validationFailureReason ?? "none")}</li>
+      <li><strong>message.parsed exists:</strong> ${shape?.messageParsedExists ? "true" : "false"}</li>
+      <li><strong>message.content exists:</strong> ${shape?.messageContentExists ? "true" : "false"}</li>
+      <li><strong>typeof message.content:</strong> ${escapeDiagnosticHtml(shape?.messageContentType ?? "undefined")}</li>
+      <li><strong>message refusal exists:</strong> ${shape?.messageRefusalExists ? "true" : "false"}</li>
+      <li><strong>finish reasons:</strong> ${escapeDiagnosticHtml(formatDiagnosticList(shape?.finishReasons))}</li>
+      <li><strong>legacy response.output_text exists:</strong> ${shape?.outputTextExists ? "true" : "false"}</li>
+      <li><strong>legacy response.output exists:</strong> ${shape?.outputExists ? "true" : "false"}</li>
+    </ul>
+    ${shape?.messageContentPreview ? `<p><strong>First 300 characters of message.content:</strong></p><pre>${escapeDiagnosticHtml(shape.messageContentPreview)}</pre>` : ""}
+    ${shape?.outputTextPreview ? `<p><strong>First 300 characters of legacy response.output_text:</strong></p><pre>${escapeDiagnosticHtml(shape.outputTextPreview)}</pre>` : ""}
+  </section>`;
+}
+
+function formatDiagnosticList(values: string[] | undefined): string {
+  return values && values.length > 0 ? values.join(", ") : "none";
+}
+
+function escapeDiagnosticHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 async function buildManagePacksModel(context: vscode.ExtensionContext): Promise<{
@@ -660,7 +919,7 @@ async function runAIExplanationWithProgress(
     extensionContext: context,
     document,
     apiKey,
-    model: resolveAIModel(aiSettings),
+    structuredModel: resolveStructuredAIModel(aiSettings),
     includeProjectContext: aiSettings.includeProjectContext,
     explanationLevel: aiSettings.explanationLevel,
     signal: abortController.signal
@@ -707,10 +966,13 @@ function getAISettings(): AISettings {
   const configuration = vscode.workspace.getConfiguration("devtrail");
   const speedMode = readSpeedMode(configuration.get<string>("ai.speedMode", "balanced"));
   const model = configuration.get<string>("ai.model", DEFAULT_AI_MODEL).trim() || DEFAULT_AI_MODEL;
+  const structuredModel = configuration.get<string>("ai.structuredModel", DEFAULT_AI_STRUCTURED_MODEL).trim() ||
+    DEFAULT_AI_STRUCTURED_MODEL;
 
   return {
     enabled: configuration.get<boolean>("ai.enabled", false),
     model,
+    structuredModel,
     includeProjectContext: configuration.get<boolean>("ai.includeProjectContext", true),
     slowWarningMs: readPositiveNumberSetting(configuration, "ai.slowWarningMs", DEFAULT_AI_SLOW_WARNING_MS),
     maxSelectedCharacters: readPositiveNumberSetting(
@@ -792,6 +1054,10 @@ function resolveAIModel(aiSettings: AISettings): string {
   }
 
   return aiSettings.model;
+}
+
+function resolveStructuredAIModel(aiSettings: AISettings): string {
+  return aiSettings.structuredModel;
 }
 
 function isAbortLikeError(error: unknown): boolean {

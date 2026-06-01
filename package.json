@@ -2,7 +2,7 @@
   "name": "devtrail",
   "displayName": "DevTrail",
   "description": "A local-first learning companion that explains code, terminal commands, and project setup for beginners.",
-  "version": "0.1.2-alpha.0",
+  "version": "0.1.3-alpha.0",
   "publisher": "devtrail",
   "license": "MIT",
   "private": true,
@@ -36,6 +36,7 @@
     "onCommand:devtrail.disableAI",
     "onCommand:devtrail.setOpenAIApiKey",
     "onCommand:devtrail.clearOpenAIApiKey",
+    "onCommand:devtrail.testAIFormatting",
     "onCommand:devtrail.managePacks",
     "onCommand:devtrail.installSuggestedPacks",
     "onCommand:devtrail.resetInstalledPacks",
@@ -99,6 +100,11 @@
         "category": "DevTrail"
       },
       {
+        "command": "devtrail.testAIFormatting",
+        "title": "DevTrail: Test AI Formatting",
+        "category": "DevTrail"
+      },
+      {
         "command": "devtrail.managePacks",
         "title": "DevTrail: Manage Packs",
         "category": "DevTrail"
@@ -152,6 +158,11 @@
           "default": "gpt-5-mini",
           "description": "OpenAI model used for optional AI-powered explanations. gpt-5-mini is the recommended default for quality and speed."
         },
+        "devtrail.ai.structuredModel": {
+          "type": "string",
+          "default": "gpt-4o-mini",
+          "description": "OpenAI model used for structured AI explanation parsing. gpt-4o-mini is the recommended stable default for schema-constrained output."
+        },
         "devtrail.ai.includeProjectContext": {
           "type": "boolean",
           "default": true,
@@ -186,6 +197,7 @@
   "scripts": {
     "compile": "tsc -p ./",
     "package": "vsce package",
+    "test:ai-parser": "npm run compile && node out/ai/parseAIExplanation.test.js",
     "watch": "tsc -watch -p ./"
   },
   "devDependencies": {
@@ -195,6 +207,7 @@
     "typescript": "^5.5.2"
   },
   "dependencies": {
-    "openai": "^6.39.1"
+    "openai": "^6.39.1",
+    "zod": "^4.4.3"
   }
 }

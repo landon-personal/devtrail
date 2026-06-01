@@ -7,6 +7,15 @@ export function createOpenAIClient(apiKey: string): OpenAI {
   return new OpenAI({ apiKey });
 }
 
+export function getOpenAISDKVersion(): string {
+  try {
+    // This reads package metadata only. It does not touch user code or secrets.
+    return (require("openai/package.json") as { version?: string }).version ?? "unknown";
+  } catch {
+    return "unknown";
+  }
+}
+
 export async function getOpenAIApiKey(context: vscode.ExtensionContext): Promise<string | undefined> {
   return context.secrets.get(OPENAI_API_KEY_SECRET);
 }

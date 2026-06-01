@@ -1,82 +1,249 @@
 import * as path from "path";
 import * as vscode from "vscode";
-import type { ResponseFormatTextJSONSchemaConfig } from "openai/resources/responses/responses";
+import { z } from "zod/v3";
+import { zodResponseFormat } from "openai/helpers/zod";
+import type { ChatCompletionCreateParamsNonStreaming } from "openai/resources/chat/completions";
 import { KnowledgeTerm } from "../explain/detectTerms";
 import { ExplanationLevel, getExplanationLevelLabel } from "../explain/explanationLevel";
 import { ExplanationResult } from "../explain/explainSelection";
 import { scanWorkspaceProject } from "../project/scanProject";
 import { createOpenAIClient } from "./openaiClient";
+import {
+  AIFormattingFailureCategory,
+  AIExplanationFormatError,
+  AIResponseShapeDiagnostic,
+  AIResponseWithPossibleExplanation,
+  categorizeAIRequestError,
+  parseAIExplanationFromResponse,
+  summarizeAIResponseShape
+} from "./parseAIExplanation";
 
-export class AIExplanationFormatError extends Error {
-  constructor() {
-    super("AI explanation response did not match DevTrail's JSON format.");
-    this.name = "AIExplanationFormatError";
-  }
-}
+export { AIExplanationFormatError, getAIFormattingFailureLabel } from "./parseAIExplanation";
 
 export interface AIExplanationContext {
   extensionContext: vscode.ExtensionContext;
-  document: vscode.TextDocument;
+  document: Pick<vscode.TextDocument, "languageId" | "fileName" | "uri">;
   apiKey: string;
-  model: string;
+  structuredModel: string;
   includeProjectContext: boolean;
   explanationLevel: ExplanationLevel;
   signal?: AbortSignal;
 }
 
-interface RawAIExplanation {
-  summary: string;
-  lineByLine: Array<{
-    line: string;
-    explanation: string;
-  }>;
-  keyVocabulary: Array<{
-    term: string;
-    definition: string;
-  }>;
-  commonConfusion: string[];
+export interface AIExplanationAttemptDiagnostic {
+  attempt: "strict-structured-output" | "json-fallback";
+  requestMethod: "chat.completions.parse" | "chat.completions.create";
+  model: string;
+  responseShape?: AIResponseShapeDiagnostic;
+  failureCategory?: AIFormattingFailureCategory;
+  validationFailureReason?: string;
 }
 
-interface AIResponseWithParsedOutput {
-  output_parsed?: unknown;
-  output_text?: string;
+export interface AIExplanationDiagnosticResult {
+  explanation?: ExplanationResult;
+  diagnostics: AIExplanationAttemptDiagnostic[];
+  recoveredWithJsonFallback: boolean;
+  error?: AIExplanationFormatError;
 }
 
 export async function explainSelectionWithAI(
   selectedCode: string,
   context: AIExplanationContext
 ): Promise<ExplanationResult> {
-  const client = createOpenAIClient(context.apiKey);
-  const response = await client.responses.parse(
-    {
-      model: context.model,
-      instructions: buildInstructions(context.explanationLevel),
-      input: buildInput(selectedCode, context, await buildProjectContext(context)),
-      max_output_tokens: 900,
-      store: false,
-      text: {
-        format: explanationSchema,
-        verbosity: "low"
-      }
-    },
-    {
-      signal: context.signal
-    }
+  const result = await explainSelectionWithAIWithDiagnostics(selectedCode, context, {
+    includeOutputTextPreview: false
+  });
+
+  if (result.explanation) {
+    return result.explanation;
+  }
+
+  throw result.error ?? new AIExplanationFormatError("unknown-ai-formatting-failure");
+}
+
+export async function explainSelectionWithAIWithDiagnostics(
+  selectedCode: string,
+  context: AIExplanationContext,
+  options: { includeOutputTextPreview: boolean }
+): Promise<AIExplanationDiagnosticResult> {
+  const diagnostics: AIExplanationAttemptDiagnostic[] = [];
+  const strictResult = await runAIExplanationAttempt(
+    "strict-structured-output",
+    selectedCode,
+    context,
+    options.includeOutputTextPreview
   );
-  const parsed = parseAIExplanationFromResponse(response);
+
+  diagnostics.push(strictResult.diagnostic);
+
+  if (strictResult.parsed) {
+    return {
+      explanation: toExplanationResult(strictResult.parsed, context),
+      diagnostics,
+      recoveredWithJsonFallback: false
+    };
+  }
+
+  const fallbackResult = await runAIExplanationAttempt(
+    "json-fallback",
+    selectedCode,
+    context,
+    options.includeOutputTextPreview
+  );
+
+  diagnostics.push(fallbackResult.diagnostic);
+
+  if (fallbackResult.parsed) {
+    return {
+      explanation: {
+        ...toExplanationResult(fallbackResult.parsed, context),
+        notice: "Structured parsing failed, but DevTrail recovered with JSON fallback."
+      },
+      diagnostics,
+      recoveredWithJsonFallback: true
+    };
+  }
 
   return {
-    summary: parsed.summary,
-    lineByLine: parsed.lineByLine.map((item) => formatLineExplanation(item.line, item.explanation)),
-    vocabulary: parsed.keyVocabulary.map((item): KnowledgeTerm => ({
-      term: item.term,
-      plainEnglish: item.definition,
-      confusion: ""
-    })),
-    beginnerConfusions: parsed.commonConfusion,
-    source: "ai",
-    explanationLevel: context.explanationLevel
+    diagnostics,
+    recoveredWithJsonFallback: false,
+    error: fallbackResult.error ?? strictResult.error ?? new AIExplanationFormatError("unknown-ai-formatting-failure")
   };
+}
+
+async function runAIExplanationAttempt(
+  attempt: AIExplanationAttemptDiagnostic["attempt"],
+  selectedCode: string,
+  context: AIExplanationContext,
+  includeOutputTextPreview: boolean
+): Promise<{
+  parsed?: ReturnType<typeof parseAIExplanationFromResponse>;
+  diagnostic: AIExplanationAttemptDiagnostic;
+  error?: AIExplanationFormatError;
+}> {
+  const diagnostic: AIExplanationAttemptDiagnostic = {
+    attempt,
+    requestMethod: attempt === "strict-structured-output" ? "chat.completions.parse" : "chat.completions.create",
+    model: context.structuredModel
+  };
+
+  try {
+    const response = attempt === "strict-structured-output"
+      ? await requestStructuredExplanation(selectedCode, context)
+      : await requestJsonFallbackExplanation(selectedCode, context);
+
+    diagnostic.responseShape = summarizeAIResponseShape(response, includeOutputTextPreview);
+
+    return {
+      parsed: parseAIExplanationFromResponse(response),
+      diagnostic
+    };
+  } catch (error) {
+    const formatError = toAIExplanationFormatError(error);
+    diagnostic.failureCategory = formatError.category;
+    diagnostic.validationFailureReason = formatError.validationFailureReason;
+
+    return {
+      diagnostic,
+      error: formatError
+    };
+  }
+}
+
+async function requestStructuredExplanation(
+  selectedCode: string,
+  context: AIExplanationContext
+): Promise<AIResponseWithPossibleExplanation> {
+  const client = createOpenAIClient(context.apiKey);
+
+  try {
+    return await client.chat.completions.parse(
+      {
+        model: context.structuredModel,
+        messages: buildChatMessages(
+          buildInstructions(context.explanationLevel),
+          buildInput(selectedCode, context, await buildProjectContext(context))
+        ),
+        response_format: zodResponseFormat(explanationSchema, "devtrail_explanation"),
+        max_completion_tokens: 900,
+        store: false,
+        temperature: 0.2
+      },
+      { signal: context.signal }
+    );
+  } catch (error) {
+    const category = categorizeAIRequestError(error);
+
+    if (category === "unknown-ai-formatting-failure") {
+      throw error;
+    }
+
+    throw new AIExplanationFormatError(category);
+  }
+}
+
+async function requestJsonFallbackExplanation(
+  selectedCode: string,
+  context: AIExplanationContext
+): Promise<AIResponseWithPossibleExplanation> {
+  const client = createOpenAIClient(context.apiKey);
+
+  try {
+    return await client.chat.completions.create(
+      buildChatCompletionCreateParams(
+        selectedCode,
+        context,
+        await buildProjectContext(context),
+        {
+          instructions: buildJsonFallbackInstructions(context.explanationLevel)
+        }
+      ),
+      { signal: context.signal }
+    );
+  } catch (error) {
+    const category = categorizeAIRequestError(error);
+
+    if (category === "unknown-ai-formatting-failure") {
+      throw error;
+    }
+
+    throw new AIExplanationFormatError(category);
+  }
+}
+
+function buildChatCompletionCreateParams(
+  selectedCode: string,
+  context: AIExplanationContext,
+  projectContext: string,
+  options: {
+    instructions: string;
+  }
+): ChatCompletionCreateParamsNonStreaming {
+  return {
+    model: context.structuredModel,
+    messages: buildChatMessages(options.instructions, buildInput(selectedCode, context, projectContext)),
+    response_format: { type: "json_object" },
+    max_completion_tokens: 900,
+    store: false,
+    stream: false,
+    temperature: 0.2
+  };
+}
+
+function buildChatMessages(
+  instructions: string,
+  userInput: string
+): ChatCompletionCreateParamsNonStreaming["messages"] {
+  return [
+    {
+      role: "developer",
+      content: instructions
+    },
+    {
+      role: "user",
+      content: userInput
+    }
+  ];
 }
 
 function buildInstructions(explanationLevel: ExplanationLevel): string {
@@ -95,6 +262,25 @@ function buildInstructions(explanationLevel: ExplanationLevel): string {
     "Avoid vague filler.",
     "Do not rewrite the user's code.",
     "Do not claim certainty when unsure."
+  ].join("\n");
+}
+
+function buildJsonFallbackInstructions(explanationLevel: ExplanationLevel): string {
+  return [
+    "You are DevTrail, a beginner-friendly code explainer inside VS Code.",
+    "Return one JSON object only. Do not include Markdown, code fences, headings, or extra text.",
+    "Use exactly these required fields: summary, lineByLine, keyVocabulary, commonConfusion.",
+    "lineByLine must be an array of objects with line and explanation strings.",
+    "keyVocabulary must be an array of objects with term and definition strings.",
+    "commonConfusion must be an array of strings.",
+    `The selected explanation level is ${getExplanationLevelLabel(explanationLevel)}.`,
+    ...buildLevelInstructions(explanationLevel),
+    "Keep the summary to 1-2 short sentences.",
+    "Include no more than 8 lineByLine items, no more than 6 keyVocabulary items, and no more than 4 commonConfusion notes.",
+    "Explain React and JSX clearly when present.",
+    "Keep each line explanation short and concrete.",
+    "Avoid vague filler.",
+    "Do not rewrite the user's code."
   ].join("\n");
 }
 
@@ -184,80 +370,6 @@ async function buildProjectContext(context: AIExplanationContext): Promise<strin
   ].join("\n");
 }
 
-function parseAIExplanationFromResponse(response: AIResponseWithParsedOutput): RawAIExplanation {
-  try {
-    if (response.output_parsed !== undefined && response.output_parsed !== null) {
-      return normalizeAIExplanation(response.output_parsed);
-    }
-
-    if (typeof response.output_text === "string" && response.output_text.trim().length > 0) {
-      return normalizeAIExplanation(JSON.parse(response.output_text) as unknown);
-    }
-
-    throw new AIExplanationFormatError();
-  } catch (error) {
-    console.warn("DevTrail AI formatting parse failed");
-    throw new AIExplanationFormatError();
-  }
-}
-
-function normalizeAIExplanation(value: unknown): RawAIExplanation {
-  if (!isRawAIExplanation(value)) {
-    throw new AIExplanationFormatError();
-  }
-
-  return {
-    summary: cleanText(value.summary),
-    lineByLine: value.lineByLine.slice(0, 8).map((item) => ({
-      line: cleanText(item.line),
-      explanation: cleanText(item.explanation)
-    })),
-    keyVocabulary: value.keyVocabulary.slice(0, 6).map((item) => ({
-      term: cleanText(item.term),
-      definition: cleanText(item.definition)
-    })),
-    commonConfusion: value.commonConfusion.slice(0, 4).map(cleanText)
-  };
-}
-
-function isRawAIExplanation(value: unknown): value is RawAIExplanation {
-  if (!value || typeof value !== "object") {
-    return false;
-  }
-
-  const maybeValue = value as Partial<RawAIExplanation>;
-
-  return typeof maybeValue.summary === "string" &&
-    Array.isArray(maybeValue.lineByLine) &&
-    maybeValue.lineByLine.every(isLineExplanation) &&
-    Array.isArray(maybeValue.keyVocabulary) &&
-    maybeValue.keyVocabulary.every(isVocabularyItem) &&
-    Array.isArray(maybeValue.commonConfusion) &&
-    maybeValue.commonConfusion.every((item) => typeof item === "string");
-}
-
-function isLineExplanation(value: unknown): value is { line: string; explanation: string } {
-  if (!value || typeof value !== "object") {
-    return false;
-  }
-
-  const maybeValue = value as { line?: unknown; explanation?: unknown };
-
-  return typeof maybeValue.line === "string" &&
-    typeof maybeValue.explanation === "string";
-}
-
-function isVocabularyItem(value: unknown): value is { term: string; definition: string } {
-  if (!value || typeof value !== "object") {
-    return false;
-  }
-
-  const maybeValue = value as { term?: unknown; definition?: unknown };
-
-  return typeof maybeValue.term === "string" &&
-    typeof maybeValue.definition === "string";
-}
-
 function formatLineExplanation(line: string, explanation: string): string {
   if (line.trim().length === 0) {
     return explanation;
@@ -266,67 +378,41 @@ function formatLineExplanation(line: string, explanation: string): string {
   return `${line}: ${explanation}`;
 }
 
-function cleanText(value: string): string {
-  return value
-    .replace(/```+/g, "")
-    .replace(/`([^`]+)`/g, "$1")
-    .replace(/\s+/g, " ")
-    .trim();
+function toExplanationResult(
+  parsed: ReturnType<typeof parseAIExplanationFromResponse>,
+  context: AIExplanationContext
+): ExplanationResult {
+  return {
+    summary: parsed.summary,
+    lineByLine: parsed.lineByLine.map((item) => formatLineExplanation(item.line, item.explanation)),
+    vocabulary: parsed.keyVocabulary.map((item): KnowledgeTerm => ({
+      term: item.term,
+      plainEnglish: item.definition,
+      confusion: ""
+    })),
+    beginnerConfusions: parsed.commonConfusion,
+    source: "ai",
+    explanationLevel: context.explanationLevel
+  };
 }
 
-const explanationSchema: ResponseFormatTextJSONSchemaConfig = {
-  type: "json_schema",
-  name: "devtrail_explanation",
-  strict: true,
-  schema: {
-    type: "object",
-    additionalProperties: false,
-    required: ["summary", "lineByLine", "keyVocabulary", "commonConfusion"],
-    properties: {
-      summary: {
-        type: "string"
-      },
-      lineByLine: {
-        type: "array",
-        maxItems: 8,
-        items: {
-          type: "object",
-          additionalProperties: false,
-          required: ["line", "explanation"],
-          properties: {
-            line: {
-              type: "string"
-            },
-            explanation: {
-              type: "string"
-            }
-          }
-        }
-      },
-      keyVocabulary: {
-        type: "array",
-        maxItems: 6,
-        items: {
-          type: "object",
-          additionalProperties: false,
-          required: ["term", "definition"],
-          properties: {
-            term: {
-              type: "string"
-            },
-            definition: {
-              type: "string"
-            }
-          }
-        }
-      },
-      commonConfusion: {
-        type: "array",
-        maxItems: 4,
-        items: {
-          type: "string"
-        }
-      }
-    }
+function toAIExplanationFormatError(error: unknown): AIExplanationFormatError {
+  if (error instanceof AIExplanationFormatError) {
+    return error;
   }
-};
+
+  return new AIExplanationFormatError(categorizeAIRequestError(error));
+}
+
+const explanationSchema = z.object({
+  summary: z.string(),
+  lineByLine: z.array(z.object({
+    line: z.string(),
+    explanation: z.string()
+  }).strict()),
+  keyVocabulary: z.array(z.object({
+    term: z.string(),
+    definition: z.string()
+  }).strict()),
+  commonConfusion: z.array(z.string())
+}).strict();
