@@ -1,6 +1,6 @@
 # DevTrail Tester Feedback Guide
 
-Use this guide when asking beta testers to try DevTrail.
+Use this guide when asking release-candidate testers to try DevTrail.
 
 ## Who Should Test DevTrail
 
@@ -13,6 +13,8 @@ Use this guide when asking beta testers to try DevTrail.
 ## What To Test
 
 - Open `DevTrail: Open Setup Guide` and choose an experience level.
+- Confirm setup opens automatically on a fresh install.
+- Try `DevTrail: Quick Start`, the `$(sparkle) DevTrail` status bar menu, keyboard shortcuts, and right-click `DevTrail: Explain Selection`.
 - Install recommended packs in the setup guide or `DevTrail: Manage Packs`.
 - Hover over known terms in `.js`, `.jsx`, `.ts`, and `.tsx` files.
 - Select small JavaScript snippets and run `DevTrail: Explain Selection`.

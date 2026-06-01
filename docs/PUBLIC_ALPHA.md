@@ -1,10 +1,10 @@
-# DevTrail v0.5 Public Beta Notes
+# DevTrail v1.0 Release Candidate Notes
 
-Note: this file keeps its original alpha-era filename for continuity, but the current guidance is for the v0.5 beta.
+Note: this file keeps its original alpha-era filename for continuity, but the current guidance is for `v1.0.0-rc.0`.
 
-## What Beta Means
+## What Release Candidate Means
 
-DevTrail v0.5 beta is a tester-focused build for feedback before any wider public or Marketplace launch. It is useful enough to try, but explanations can still be incomplete or imperfect.
+DevTrail `v1.0.0-rc.0` is the final candidate for v1 testing before a stable `v1.0.0`. It is useful enough to try, but explanations can still be incomplete or imperfect.
 
 Expect:
 
@@ -18,9 +18,11 @@ Expect:
 - manual `.vsix` installation
 - no remote pack downloads
 
+Do not add major new features before v1 unless a serious bug appears. Focus feedback on reliability, wording, docs, install flow, and privacy.
+
 ## Recommended Testers
 
-Good beta testers include:
+Good release-candidate testers include:
 
 - beginner JavaScript and React learners
 - bootcamp students
@@ -66,7 +68,7 @@ Use `docs/TESTER_FEEDBACK.md` when collecting feedback so testers know what to t
 4. Run `Extensions: Install from VSIX...`.
 5. Select the downloaded file.
 6. Reload VS Code if prompted.
-7. Run `DevTrail: Open Setup Guide`.
+7. The setup guide should open automatically on first activation. You can also run `DevTrail: Open Setup Guide`.
 
 ## Uninstall
 

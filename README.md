@@ -12,7 +12,7 @@ It is built for people learning JavaScript, TypeScript, React, Git, npm, and mod
 - Instructors, tutors, and mentors helping people read code
 - Developers who want local, short explanations inside VS Code
 
-## Current Beta Features
+## Current Release Candidate Features
 
 - First-install setup guide auto-launch so new testers see what to do right away.
 - `DevTrail: Quick Start`: one menu for common actions from the Command Palette or status bar.
@@ -30,7 +30,7 @@ It is built for people learning JavaScript, TypeScript, React, Git, npm, and mod
 
 ## Install From VSIX
 
-DevTrail is not on the VS Code Marketplace yet. Beta testers install it from a `.vsix` file.
+DevTrail is not on the VS Code Marketplace yet. Release candidate testers install it from a `.vsix` file.
 
 1. Download the latest DevTrail `.vsix` from GitHub Releases.
 2. Open VS Code.
@@ -43,7 +43,7 @@ DevTrail is not on the VS Code Marketplace yet. Beta testers install it from a `
 Command-line install:
 
 ```sh
-code --install-extension devtrail-0.5.0-beta.0.vsix
+code --install-extension devtrail-1.0.0-rc.0.vsix
 ```
 
 ## First Run
@@ -146,7 +146,7 @@ DevTrail does not include telemetry, analytics, accounts, cloud sync, payments, 
 
 ## Bundled Packs
 
-Packs teach DevTrail about languages, tools, and libraries. In this beta, packs are bundled with the extension and installed into local VS Code extension state.
+Packs teach DevTrail about languages, tools, and libraries. In this release candidate, packs are bundled with the extension and installed into local VS Code extension state.
 
 Current bundled packs:
 
@@ -194,7 +194,7 @@ Run in VS Code:
 
 ## Current Limitations
 
-- This is a beta. Expect some rough edges while tester feedback is still being collected.
+- This is a release candidate. Expect mostly stabilization work before v1.0.0.
 - Local code explanations are pattern-based, not full program analysis.
 - React/JSX local explanations cover common patterns, not every valid React structure.
 - Pack installation only enables bundled JSON/content packs.
@@ -209,8 +209,8 @@ Run in VS Code:
 - Expand bundled packs with more framework-specific beginner patterns.
 - Add focused automated tests around explanation and pack logic.
 - Add safer remote pack distribution later with schema validation, checksums, signatures, and trust metadata.
-- Prepare public beta screenshots and demo GIFs.
-- Consider Marketplace publishing after beta feedback.
+- Prepare final v1 screenshots and demo GIFs.
+- Consider Marketplace publishing after v1 feedback.
 
 ## Report Issues
 
@@ -233,4 +233,4 @@ Useful reports include:
 
 Do not include API keys, `.env` values, private source code, school/private data, access tokens, passwords, or other secrets. Use a tiny fake code example whenever possible.
 
-See [docs/TESTER_FEEDBACK.md](docs/TESTER_FEEDBACK.md) for safe beta feedback guidance.
+See [docs/TESTER_FEEDBACK.md](docs/TESTER_FEEDBACK.md) for safe release-candidate feedback guidance.

@@ -2,7 +2,7 @@
   "name": "devtrail",
   "displayName": "DevTrail",
   "description": "A local-first learning companion that explains code, terminal commands, and project setup for beginners.",
-  "version": "0.5.0-beta.0",
+  "version": "1.0.0-rc.0",
   "publisher": "devtrail",
   "license": "MIT",
   "private": true,
@@ -50,6 +50,16 @@
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
+      {
+        "command": "devtrail.quickStart",
+        "title": "DevTrail: Quick Start",
+        "category": "DevTrail"
+      },
+      {
+        "command": "devtrail.openSetupGuide",
+        "title": "DevTrail: Open Setup Guide",
+        "category": "DevTrail"
+      },
       {
         "command": "devtrail.explainSelection",
         "title": "DevTrail: Explain Selection",
@@ -118,16 +128,6 @@
       {
         "command": "devtrail.resetInstalledPacks",
         "title": "DevTrail: Reset Installed Packs",
-        "category": "DevTrail"
-      },
-      {
-        "command": "devtrail.quickStart",
-        "title": "DevTrail: Quick Start",
-        "category": "DevTrail"
-      },
-      {
-        "command": "devtrail.openSetupGuide",
-        "title": "DevTrail: Open Setup Guide",
         "category": "DevTrail"
       }
     ],

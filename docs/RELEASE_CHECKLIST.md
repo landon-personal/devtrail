@@ -16,6 +16,13 @@ Use this before creating a GitHub prerelease. Do not publish to the VS Code Mark
 
 ## Manual VS Code QA
 
+- Test in a clean VS Code profile if possible.
+- Confirm first-install setup opens automatically.
+- Click `Finish Setup` and confirm setup does not reopen repeatedly.
+- Run `DevTrail: Quick Start`.
+- Click the `$(sparkle) DevTrail` status bar item.
+- Test default keyboard shortcuts from `docs/SHORTCUTS.md`.
+- Right-click selected code and run `DevTrail: Explain Selection`.
 - Run `DevTrail: Open Setup Guide`.
 - Choose each explanation level.
 - Install a recommended pack from setup.
@@ -40,6 +47,7 @@ Use this before creating a GitHub prerelease. Do not publish to the VS Code Mark
 ## Documentation Checks
 
 - Check README install instructions.
+- Check `docs/V1_RELEASE_CANDIDATE.md`.
 - Check README optional AI instructions.
 - Check `docs/index.html` links.
 - Check `docs/WEBSITE.md`.

@@ -1,6 +1,6 @@
-# Make DevTrail Public Later
+# DevTrail Public Release Steps
 
-These steps are for later. Do not do them until Landon decides DevTrail is ready for public beta sharing.
+The repo is already public. Use these steps when updating a public release candidate or final release.
 
 ## Before You Start
 
@@ -13,40 +13,37 @@ git status --short
 ```
 
 4. Make sure no `.vsix`, `node_modules`, `out`, `.env`, or private files are staged.
-5. Confirm the latest release is `v0.5.0-beta.0`.
+5. Confirm the latest intended release is `v1.0.0-rc.0`.
 
-## Make The Repo Public
+## Confirm The Repo Is Public
 
 1. Open GitHub.
 2. Go to `landon-personal/devtrail`.
 3. Open `Settings`.
 4. Open `General`.
-5. Scroll to `Danger Zone`.
-6. Click `Change repository visibility`.
-7. Choose `Make public`.
-8. Follow GitHub's confirmation steps.
-9. Do not enable GitHub Pages yet.
+5. Confirm the repository visibility is public.
+6. Do not change visibility unless Landon explicitly asks.
 
 ## Confirm The Release Download Works
 
 1. Open:
 
 ```text
-https://github.com/landon-personal/devtrail/releases/tag/v0.5.0-beta.0
+https://github.com/landon-personal/devtrail/releases/tag/v1.0.0-rc.0
 ```
 
-2. Click `devtrail-0.5.0-beta.0.vsix`.
+2. Click `devtrail-1.0.0-rc.0.vsix`.
 3. Confirm the file downloads.
 4. Install it in VS Code:
 
 ```bash
-code --install-extension ~/Downloads/devtrail-0.5.0-beta.0.vsix --force
+code --install-extension ~/Downloads/devtrail-1.0.0-rc.0.vsix --force
 ```
 
 5. Open VS Code.
 6. Confirm setup opens automatically. You can also run `DevTrail: Open Setup Guide`.
 
-If the download fails or shows a 404, stop and do not share the beta link yet.
+If the download fails or shows a 404, stop and do not share the release-candidate link yet.
 
 ## Enable GitHub Pages If Desired
 
@@ -72,7 +69,7 @@ If the page has broken links, stop and fix them before sharing.
 3. Add the release link:
 
 ```text
-https://github.com/landon-personal/devtrail/releases/tag/v0.5.0-beta.0
+https://github.com/landon-personal/devtrail/releases/tag/v1.0.0-rc.0
 ```
 
 4. Send it to 3-5 trusted testers.

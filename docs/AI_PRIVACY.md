@@ -2,6 +2,8 @@
 
 DevTrail is local-first by default. Local explanations, hover explanations, command explanations, project analysis, setup guide recommendations, and pack registry checks run on your machine.
 
+This privacy model applies to `v1.0.0-rc.0`.
+
 ## What Stays Local
 
 - Hovered terms and local pack lookups
