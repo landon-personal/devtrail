@@ -4,32 +4,56 @@
     {
       "term": "npm install",
       "plainEnglish": "Installs packages listed in package.json so the project can run.",
-      "confusion": "It may update lockfiles. That is normal for package installs."
+      "beginnerExplanation": "npm install downloads the packages this project needs.",
+      "learningExplanation": "npm install reads package.json and package-lock.json, then installs dependencies into node_modules.",
+      "advancedExplanation": "npm install resolves and materializes the dependency graph while updating the lockfile when needed.",
+      "confusion": "It may update lockfiles. That is normal for package installs.",
+      "example": "npm install"
     },
     {
       "term": "npm run dev",
       "plainEnglish": "Runs the project's development script from package.json.",
-      "confusion": "The script must exist in package.json or npm will report a missing script."
+      "beginnerExplanation": "npm run dev usually starts the app while you are building it.",
+      "learningExplanation": "npm run dev runs the dev script defined in package.json.",
+      "advancedExplanation": "npm run dev invokes the configured package script in npm's script environment.",
+      "confusion": "The script must exist in package.json or npm will report a missing script.",
+      "example": "npm run dev"
     },
     {
       "term": "npm run build",
       "plainEnglish": "Runs the project's build script, usually to create production-ready output.",
-      "confusion": "Building does not usually start the app for local editing."
+      "beginnerExplanation": "npm run build creates the version of the app meant for release or deployment.",
+      "learningExplanation": "npm run build runs the build script from package.json, often creating optimized output.",
+      "advancedExplanation": "npm run build invokes the project's production build pipeline.",
+      "confusion": "Building does not usually start the app for local editing.",
+      "example": "npm run build"
     },
     {
       "term": "package.json",
       "plainEnglish": "The main file that lists project scripts, dependencies, and package metadata.",
-      "confusion": "Editing package.json manually can be useful, but invalid JSON will break npm commands."
+      "beginnerExplanation": "package.json is the project file that lists commands and installed packages.",
+      "learningExplanation": "package.json stores metadata, scripts, dependencies, and development tools for a Node project.",
+      "advancedExplanation": "package.json is npm's project manifest for scripts, package metadata, and dependency declarations.",
+      "confusion": "Editing package.json manually can be useful, but invalid JSON will break npm commands.",
+      "example": "\"scripts\": { \"dev\": \"vite\" }"
     },
     {
       "term": "dependencies",
       "plainEnglish": "Packages the app usually needs when it runs.",
-      "confusion": "Dependencies are different from devDependencies, which are mostly tools used while building."
+      "beginnerExplanation": "dependencies are packages the app needs to work.",
+      "learningExplanation": "dependencies are runtime packages required by the application or library.",
+      "advancedExplanation": "dependencies are installed as production dependency declarations for consumers or runtime execution.",
+      "confusion": "Dependencies are different from devDependencies, which are mostly tools used while building.",
+      "example": "\"dependencies\": { \"react\": \"latest\" }"
     },
     {
       "term": "devDependencies",
       "plainEnglish": "Packages mostly used during development, checking, or building.",
-      "confusion": "A package can work from either section, but the distinction helps describe why it is installed."
+      "beginnerExplanation": "devDependencies are tools you mostly use while building the project.",
+      "learningExplanation": "devDependencies are packages for development, tests, type checking, linting, or builds.",
+      "advancedExplanation": "devDependencies declare tooling dependencies that are generally not needed by production runtime consumers.",
+      "confusion": "A package can work from either section, but the distinction helps describe why it is installed.",
+      "example": "\"devDependencies\": { \"typescript\": \"latest\" }"
     }
   ],
   "commands": [

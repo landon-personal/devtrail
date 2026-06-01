@@ -85,21 +85,32 @@ export function renderSetupGuideHtml(model: SetupGuideModel, nonce: string): str
       margin-top: 6px;
       padding: 1px 6px;
     }
+
+    .callout {
+      border: 1px solid var(--vscode-panel-border);
+      border-radius: 6px;
+      margin: 12px 0;
+      padding: 12px;
+    }
   </style>
 </head>
 <body>
   <h1>DevTrail Setup Guide</h1>
 
   <h2>Welcome</h2>
-  <p>DevTrail is a local-first learning helper for VS Code. It explains selected code, common terminal commands, hover terms, and project setup in beginner-friendly language.</p>
+  <p>DevTrail helps you understand code as you learn. It explains selected code, common terminal commands, hover terms, and project setup in beginner-friendly language.</p>
   <div class="grid">
     <div class="card">
-      <h3>What stays local</h3>
-      <p>Local explanations stay on this machine. DevTrail only sends selected code to AI if you explicitly enable AI and store an API key.</p>
+      <h3>Local-first by default</h3>
+      <p>Hovers, local explanations, project scans, command explanations, and pack recommendations run on this machine.</p>
     </div>
     <div class="card">
       <h3>What packs are</h3>
-      <p>Packs are small local files that teach DevTrail about a language, tool, library, or course topic.</p>
+      <p>Packs teach DevTrail about the languages, tools, and libraries your project uses. In this alpha, packs are bundled and install locally.</p>
+    </div>
+    <div class="card">
+      <h3>AI is optional</h3>
+      <p>DevTrail uses local packs unless you enable AI, set an API key, and choose code to explain.</p>
     </div>
     <div class="card">
       <h3>What to try first</h3>
@@ -108,7 +119,7 @@ export function renderSetupGuideHtml(model: SetupGuideModel, nonce: string): str
   </div>
 
   <h2>Choose experience level</h2>
-  <p class="muted">This controls explanation depth for both local DevTrail explanations and optional AI explanations.</p>
+  <p class="muted">Choose how much detail you want. DevTrail uses this for local explanations, hovers where possible, and optional AI prompts.</p>
   <div class="grid" id="experience-levels">
     ${model.experienceLevels.map((level) => `
       <button
@@ -131,13 +142,16 @@ export function renderSetupGuideHtml(model: SetupGuideModel, nonce: string): str
 
   <h2>Recommended packs</h2>
   <p class="muted">Packs teach DevTrail about the languages, tools, and libraries your project uses. In this alpha, packs are bundled with DevTrail and install locally.</p>
+  <div class="callout">
+    Install the packs that match your project first. You can change them later with <code>DevTrail: Manage Packs</code>.
+  </div>
   ${renderSuggestedPacks(model)}
 
   <h2>Enable learning features</h2>
   <div class="grid">
     <div class="card">
       <h3>Hover explanations</h3>
-      <p>Hover over terms like <code>const</code>, <code>map</code>, or <code>fetch</code> to see short explanations.</p>
+      <p>Hover over terms like <code>const</code>, <code>map</code>, <code>useEffect</code>, or <code>props</code> to see short explanations.</p>
     </div>
     <div class="card">
       <h3>Explain Selection</h3>
@@ -158,6 +172,7 @@ export function renderSetupGuideHtml(model: SetupGuideModel, nonce: string): str
     <li>Open a code file and hover over a term.</li>
     <li>Highlight code and run <code>DevTrail: Explain Selection</code>.</li>
     <li>Try <code>DevTrail: Explain Command</code> with <code>git status</code>.</li>
+    <li>Install a recommended pack if DevTrail suggests one for your project.</li>
     <li>Run <code>DevTrail: Analyze Project</code> anytime.</li>
   </ul>
 
@@ -254,7 +269,7 @@ function renderSuggestedPacks(model: SetupGuideModel): string {
         ${
           pack.installStatus === "Installed"
             ? "<span class=\"status\">Installed</span>"
-            : `<button type="button" data-pack-action="installPack" data-pack-id="${escapeHtml(pack.id)}">Install</button>`
+            : `<p><span class="status">Not installed</span></p><button type="button" data-pack-action="installPack" data-pack-id="${escapeHtml(pack.id)}">Install locally</button>`
         }
       </div>
     `).join("")}

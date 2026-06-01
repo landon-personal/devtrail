@@ -4,42 +4,92 @@
     {
       "term": "useState",
       "plainEnglish": "A React hook that stores a value and gives you a setter function to update it.",
-      "confusion": "Changing state with the setter asks React to render again. Changing the value directly will not."
+      "beginnerExplanation": "useState lets React remember a value and update the screen when it changes.",
+      "learningExplanation": "useState creates component state and an updater function that schedules a re-render.",
+      "advancedExplanation": "useState stores render-affecting state for a component instance and queues updates.",
+      "confusion": "Changing state with the setter asks React to render again. Changing the value directly will not.",
+      "example": "const [count, setCount] = useState(0);"
     },
     {
       "term": "useEffect",
       "plainEnglish": "A React hook for running code after the component renders, often for loading data or syncing with something outside React.",
-      "confusion": "An effect can run more than once. The dependency array controls when it runs again."
+      "beginnerExplanation": "useEffect lets React run code after the screen updates.",
+      "learningExplanation": "useEffect runs side-effect code after render, often for fetching data, subscriptions, or syncing with outside systems.",
+      "advancedExplanation": "useEffect schedules post-render side effects based on its dependency array.",
+      "confusion": "An effect can run more than once. The dependency array controls when it runs again.",
+      "example": "useEffect(() => {\n  document.title = pageTitle;\n}, [pageTitle]);"
     },
     {
       "term": "props",
       "plainEnglish": "Values passed into a component from the place where that component is used.",
-      "confusion": "Props are read-only inside the child component. The parent owns the value."
-    },
-    {
-      "term": "component",
-      "plainEnglish": "A reusable piece of UI, usually written as a function that returns JSX.",
-      "confusion": "Component names should start with a capital letter so React treats them as components."
-    },
-    {
-      "term": "JSX",
-      "plainEnglish": "A JavaScript syntax that looks like HTML and describes what React should render.",
-      "confusion": "JSX is not a plain string. It gets compiled into JavaScript before the browser runs it."
+      "beginnerExplanation": "Props are values a parent gives to a React component.",
+      "learningExplanation": "Props are read-only values passed from a parent component to a child component.",
+      "advancedExplanation": "Props are immutable component inputs passed through React's render tree.",
+      "confusion": "Props are read-only inside the child component. The parent owns the value.",
+      "example": "function Greeting({ name }) {\n  return <h1>Hello {name}</h1>;\n}"
     },
     {
       "term": "children",
       "plainEnglish": "The content placed between a component's opening and closing tags.",
-      "confusion": "Children are passed through props, even though they look nested in JSX."
+      "beginnerExplanation": "children is the nested content placed inside a component.",
+      "learningExplanation": "children is a special prop containing whatever is nested between a component's tags.",
+      "advancedExplanation": "children is ReactNode content passed through props for composition.",
+      "confusion": "Children are passed through props, even though they look nested in JSX.",
+      "example": "<Layout>\n  <Dashboard />\n</Layout>"
+    },
+    {
+      "term": "component",
+      "plainEnglish": "A reusable piece of UI, usually written as a function that returns JSX.",
+      "beginnerExplanation": "A component is a reusable piece of the screen.",
+      "learningExplanation": "A component is a reusable UI function that receives props and returns JSX.",
+      "advancedExplanation": "A component is a renderable React unit with props, state, and JSX output.",
+      "confusion": "Component names should start with a capital letter so React treats them as components.",
+      "example": "function Button() {\n  return <button>Save</button>;\n}"
+    },
+    {
+      "term": "JSX",
+      "plainEnglish": "A JavaScript syntax that looks like HTML and describes what React should render.",
+      "beginnerExplanation": "JSX looks like HTML, but it is how React describes screen elements in JavaScript.",
+      "learningExplanation": "JSX is syntax that compiles into React element creation calls.",
+      "advancedExplanation": "JSX is compile-time syntax for creating React element descriptions.",
+      "confusion": "JSX is not a plain string. It gets compiled into JavaScript before the browser runs it.",
+      "example": "return <h1>Welcome</h1>;"
+    },
+    {
+      "term": "hook",
+      "plainEnglish": "A React helper function that lets a component use React features or shared behavior.",
+      "beginnerExplanation": "A hook is a helper that gives a component extra React behavior.",
+      "learningExplanation": "Hooks let components use state, effects, context, refs, or shared reusable logic.",
+      "advancedExplanation": "Hooks compose stateful React behavior and must follow the Rules of Hooks.",
+      "confusion": "Hooks should be called at the top level of a component or another hook, not inside random if statements.",
+      "example": "const value = usePremium();"
     },
     {
       "term": "Navigate",
       "plainEnglish": "A React Router component that sends the user to another route.",
-      "confusion": "Rendering Navigate changes the current route. It is not just a visual link."
+      "beginnerExplanation": "Navigate redirects the user to a different page in the app.",
+      "learningExplanation": "Navigate changes the current route when it renders.",
+      "advancedExplanation": "Navigate performs declarative navigation by updating router state.",
+      "confusion": "Rendering Navigate changes the current route. It is not just a visual link.",
+      "example": "return <Navigate to=\"/login\" replace />;"
     },
     {
       "term": "Route",
       "plainEnglish": "A React Router entry that connects a URL path to the component that should show there.",
-      "confusion": "Route needs to be inside the router setup to work."
+      "beginnerExplanation": "Route connects a URL to the screen React should show.",
+      "learningExplanation": "Route maps a path to an element inside a React Router setup.",
+      "advancedExplanation": "Route declares a branch in the router tree and the element rendered for a match.",
+      "confusion": "Route needs to be inside the router setup to work.",
+      "example": "<Route path=\"/settings\" element={<Settings />} />"
+    },
+    {
+      "term": "conditional rendering",
+      "plainEnglish": "Showing one piece of UI only when a condition is true.",
+      "beginnerExplanation": "Conditional rendering means React shows something only in certain situations.",
+      "learningExplanation": "Conditional rendering uses if statements, &&, or ? : to choose what JSX appears.",
+      "advancedExplanation": "Conditional rendering chooses branches in the component's returned element tree.",
+      "confusion": "If the condition is false, React may render nothing for that branch.",
+      "example": "{isLoading && <Spinner />}"
     }
   ]
 }

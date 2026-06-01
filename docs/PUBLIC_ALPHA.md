@@ -1,15 +1,15 @@
-# DevTrail v0.1 Public Alpha
+# DevTrail v0.2 Public Alpha
 
 ## What Alpha Means
 
-DevTrail v0.1 alpha is an early build for manual testing and feedback. It is useful enough to try, but it is not a polished marketplace release yet.
+DevTrail v0.2 alpha is an early build for manual testing and feedback. It is useful enough to try, but it is not a polished marketplace release yet.
 
 Expect:
 
-- simple local explanations
+- improved local explanations for common JavaScript and React/JSX patterns
 - customizable Beginner, Learning, and Advanced explanation levels
 - rough edges in real-world code
-- limited bundled pack content
+- richer starter pack content
 - manual `.vsix` installation
 - no remote pack downloads
 
@@ -45,9 +45,13 @@ Ask testers:
 - Did hover explanations appear in `.js`, `.jsx`, `.ts`, and `.tsx` files?
 - Were pack recommendations understandable?
 - Did optional AI behavior feel clearly opt-in?
+- Did Manage Packs make it clear what is installed and what is suggested?
+- Did local React/JSX explanations help with components, props, hooks, routes, and loading/protected states?
 - Did anything feel unsafe, confusing, or surprising?
 
 Do not ask testers to share API keys, `.env` files, private source code, or secrets.
+
+Use `docs/TESTER_FEEDBACK.md` when collecting feedback so testers know what to try and what not to share.
 
 ## Install The .vsix
 

@@ -4,27 +4,56 @@
     {
       "term": "git status",
       "plainEnglish": "Shows what changed and what Git is ready to commit.",
-      "confusion": "It only reports information. It does not change files."
+      "beginnerExplanation": "git status shows what changed without changing anything.",
+      "learningExplanation": "git status reports working tree and staging area state.",
+      "advancedExplanation": "git status summarizes index, working tree, branch, and upstream state.",
+      "confusion": "It only reports information. It does not change files.",
+      "example": "git status"
     },
     {
       "term": "git add .",
       "plainEnglish": "Stages changed files in the current folder for the next commit.",
-      "confusion": "It can stage more than you intended, so check git status first."
+      "beginnerExplanation": "git add . puts your current folder's changes into the next commit.",
+      "learningExplanation": "git add . stages changes under the current directory in Git's index.",
+      "advancedExplanation": "git add . updates the index with tracked and untracked path changes under cwd.",
+      "confusion": "It can stage more than you intended, so check git status first.",
+      "example": "git add ."
     },
     {
       "term": "git commit -m",
       "plainEnglish": "Saves staged changes into Git history with a short message.",
-      "confusion": "It only commits staged changes, not every edited file automatically."
+      "beginnerExplanation": "git commit -m saves the staged changes with a short note.",
+      "learningExplanation": "git commit creates a snapshot from staged changes and records the message after -m.",
+      "advancedExplanation": "git commit writes a new commit object from the current index state.",
+      "confusion": "It only commits staged changes, not every edited file automatically.",
+      "example": "git commit -m \"Add setup guide\""
     },
     {
       "term": "git push",
       "plainEnglish": "Uploads your local commits to the connected remote repository.",
-      "confusion": "Push sends commits, not unsaved file changes."
+      "beginnerExplanation": "git push uploads your commits to GitHub or another remote.",
+      "learningExplanation": "git push sends local commits from your branch to its remote branch.",
+      "advancedExplanation": "git push updates refs on the remote with local commit objects.",
+      "confusion": "Push sends commits, not unsaved file changes.",
+      "example": "git push origin main"
     },
     {
       "term": "git pull",
       "plainEnglish": "Downloads remote commits and applies them to your current branch.",
-      "confusion": "Pulling with local edits can create conflicts."
+      "beginnerExplanation": "git pull brings down new commits from the remote and applies them locally.",
+      "learningExplanation": "git pull fetches remote changes and merges or rebases them into the current branch.",
+      "advancedExplanation": "git pull is fetch plus an integration step, depending on configuration.",
+      "confusion": "Pulling with local edits can create conflicts.",
+      "example": "git pull"
+    },
+    {
+      "term": "branch",
+      "plainEnglish": "A separate line of work in Git.",
+      "beginnerExplanation": "A branch lets you work on changes separately from the main line.",
+      "learningExplanation": "A branch is a movable name pointing to a commit history line.",
+      "advancedExplanation": "A branch is a ref that advances as commits are added.",
+      "confusion": "Switching branches changes which files Git shows in your working folder.",
+      "example": "git checkout -b add-login"
     }
   ],
   "commands": [

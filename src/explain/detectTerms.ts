@@ -2,6 +2,10 @@ export interface KnowledgeTerm {
   term: string;
   plainEnglish: string;
   confusion: string;
+  beginnerExplanation?: string;
+  learningExplanation?: string;
+  advancedExplanation?: string;
+  example?: string;
 }
 
 const FALLBACK_BEGINNER_TERMS = [

@@ -2,29 +2,49 @@
   "id": "vite-basics",
   "terms": [
     {
+      "term": "Vite",
+      "plainEnglish": "A fast frontend dev server and build tool.",
+      "beginnerExplanation": "Vite is the tool that helps run and build many modern frontend apps.",
+      "learningExplanation": "Vite provides a fast dev server, hot module replacement, and production builds.",
+      "advancedExplanation": "Vite uses native ESM during development and Rollup-powered production builds.",
+      "confusion": "Vite is not React itself. It is the tool that runs and builds the app.",
+      "example": "npm run dev"
+    },
+    {
       "term": "npm run dev",
       "plainEnglish": "Usually starts Vite's local development server so you can preview the app while editing.",
-      "confusion": "This server is for development. It is not the final production build."
+      "beginnerExplanation": "npm run dev usually starts the app on your computer while you work.",
+      "learningExplanation": "npm run dev runs the dev script from package.json, often starting Vite's dev server.",
+      "advancedExplanation": "npm run dev invokes the configured development script, commonly vite in watch/dev-server mode.",
+      "confusion": "This server is for development. It is not the final production build.",
+      "example": "npm run dev"
     },
     {
       "term": "npm run build",
       "plainEnglish": "Usually asks Vite to create optimized files for deployment.",
-      "confusion": "Build output is normally written to a folder like dist and is separate from your source files."
+      "beginnerExplanation": "npm run build creates the files you would put online for users.",
+      "learningExplanation": "npm run build runs the build script, usually producing optimized static output.",
+      "advancedExplanation": "npm run build invokes the production bundling pipeline.",
+      "confusion": "Build output is normally written to a folder like dist and is separate from your source files.",
+      "example": "npm run build"
     },
     {
       "term": "localhost",
       "plainEnglish": "A name for your own computer when a dev server runs locally.",
-      "confusion": "Other people cannot normally visit your localhost address from their computer."
+      "beginnerExplanation": "localhost means the app is running on your own computer.",
+      "learningExplanation": "localhost points to your machine, often with a port like localhost:5173.",
+      "advancedExplanation": "localhost resolves to loopback networking for services running on the local machine.",
+      "confusion": "Other people cannot normally visit your localhost address from their computer.",
+      "example": "http://localhost:5173"
     },
     {
       "term": "hot reload",
       "plainEnglish": "A development feature that updates the browser quickly after you save changes.",
-      "confusion": "Hot reload is a dev convenience. It is not something users rely on in production."
-    },
-    {
-      "term": "Vite",
-      "plainEnglish": "A fast frontend dev server and build tool.",
-      "confusion": "Vite is not React itself. It is the tool that runs and builds the app."
+      "beginnerExplanation": "Hot reload updates the page after you save without starting over manually.",
+      "learningExplanation": "Hot reload or HMR updates changed modules in the browser during development.",
+      "advancedExplanation": "Hot module replacement swaps changed modules while preserving app state when possible.",
+      "confusion": "Hot reload is a dev convenience. It is not something users rely on in production.",
+      "example": "Save App.jsx and the browser updates."
     }
   ]
 }

@@ -119,6 +119,18 @@ function explainLine(
     }
   }
 
+  const useStateAssignment = matchUseStateAssignment(trimmedLine);
+
+  if (useStateAssignment) {
+    return explainUseStateAssignment(lineNumber, useStateAssignment.stateName, useStateAssignment.setterName, useStateAssignment.initialValue, explanationLevel);
+  }
+
+  const propsDestructuring = matchPropsDestructuring(trimmedLine);
+
+  if (propsDestructuring) {
+    return `Line ${lineNumber}: This pulls ${formatList(propsDestructuring.props)} out of ${propsDestructuring.source}. That makes those prop values easier to use by name.`;
+  }
+
   if (mapCall) {
     const resultText = mapCall.resultDisplay
       ? ` Because ${mapCall.sourceName} is ${arraysByName.get(mapCall.sourceName)?.display}, ${mapCall.targetName} becomes ${mapCall.resultDisplay}.`
@@ -137,8 +149,11 @@ function explainLine(
     const propsText = componentDefinition.props.length > 0
       ? ` It receives props named ${componentDefinition.props.join(", ")}.`
       : "";
+    const wrapperText = componentDefinition.props.includes("children") || /(?:Provider|Layout|Wrapper|Guard|Route)$/.test(componentDefinition.name)
+      ? " This looks like a wrapper component because it can render other content inside it."
+      : "";
 
-    return `Line ${lineNumber}: ${componentDefinition.name} is a React component, which is a reusable piece of UI.${propsText}`;
+    return `Line ${lineNumber}: ${componentDefinition.name} is a React component, which is a reusable piece of UI.${propsText}${wrapperText}`;
   }
 
   const hookCall = matchHookCall(trimmedLine);
@@ -148,21 +163,75 @@ function explainLine(
       return `Line ${lineNumber}: ${describeUseEffect(explanationLevel)}`;
     }
 
-    return `Line ${lineNumber}: ${hookCall} is a hook. Hooks let React components share stateful or reusable behavior.`;
+    return `Line ${lineNumber}: ${describeHookCall(hookCall, explanationLevel)}`;
+  }
+
+  const documentTitle = matchDocumentTitleAssignment(trimmedLine);
+
+  if (documentTitle) {
+    return `Line ${lineNumber}: This updates the browser tab title to ${documentTitle}. In React, this is often done inside useEffect so the title matches the current page.`;
+  }
+
+  const loadingReturn = matchLoadingReturn(trimmedLine);
+
+  if (loadingReturn) {
+    return `Line ${lineNumber}: This is a loading state. If ${loadingReturn.condition} is true, the component returns ${loadingReturn.element} early instead of showing the normal page yet.`;
+  }
+
+  const protectedRouteReturn = matchProtectedRouteReturn(trimmedLine);
+
+  if (protectedRouteReturn) {
+    return `Line ${lineNumber}: This is protecting a route or page. If ${protectedRouteReturn.condition} is true, it returns ${protectedRouteReturn.element} to send the user somewhere else.`;
   }
 
   const conditionalJsxReturn = matchConditionalJsxReturn(trimmedLine);
 
   if (conditionalJsxReturn) {
-    return `Line ${lineNumber}: This checks a condition and immediately returns ${conditionalJsxReturn} JSX when the condition is true.`;
+    return `Line ${lineNumber}: This checks ${conditionalJsxReturn.condition} and immediately returns ${conditionalJsxReturn.element} when that condition is true.`;
+  }
+
+  const jsxMapRendering = matchJsxMapRendering(trimmedLine);
+
+  if (jsxMapRendering) {
+    return `Line ${lineNumber}: This renders a list. ${jsxMapRendering.sourceName}.map goes through each item, and ${jsxMapRendering.itemName} represents the current item while React creates JSX for it.`;
+  }
+
+  const conditionalJsxExpression = matchConditionalJsxExpression(trimmedLine);
+
+  if (conditionalJsxExpression) {
+    return `Line ${lineNumber}: This is conditional rendering. React shows ${conditionalJsxExpression.element} only when ${conditionalJsxExpression.condition} is true.`;
+  }
+
+  const ternaryJsxExpression = matchTernaryJsxExpression(trimmedLine);
+
+  if (ternaryJsxExpression) {
+    return `Line ${lineNumber}: This chooses between two pieces of JSX. If ${ternaryJsxExpression.condition} is true it starts with ${ternaryJsxExpression.truthyElement}; otherwise it uses the other branch.`;
   }
 
   if (trimmedLine.startsWith("return <") || trimmedLine.startsWith("return (")) {
     return `Line ${lineNumber}: This starts the JSX that the React component will show on the page.`;
   }
 
+  if (/^<(BrowserRouter|Routes|RouterProvider)\b/.test(trimmedLine)) {
+    return `Line ${lineNumber}: This sets up React Router so the app can choose screens based on the URL.`;
+  }
+
   if (/^<Route\b/.test(trimmedLine) || trimmedLine.includes("<Route ")) {
     return `Line ${lineNumber}: This defines a React Router route, which connects a URL path to the UI that should render there.`;
+  }
+
+  if (/^<Navigate\b/.test(trimmedLine) || trimmedLine.includes("<Navigate ")) {
+    return `Line ${lineNumber}: Navigate is a React Router component that redirects the user to another route.`;
+  }
+
+  if (/\bchildren\b/.test(trimmedLine)) {
+    return `Line ${lineNumber}: children means the nested content passed into this component. Wrapper components often render children to show the page or UI inside them.`;
+  }
+
+  const wrapperElement = matchWrapperElement(trimmedLine);
+
+  if (wrapperElement) {
+    return `Line ${lineNumber}: ${wrapperElement} looks like a React component wrapping other JSX. Wrapper components often provide layout, data, or access control around their children.`;
   }
 
   const variableAssignment = matchVariableAssignment(trimmedLine);
@@ -369,6 +438,33 @@ function matchVariableAssignment(trimmedLine: string): { kind: string; variableN
   };
 }
 
+function matchUseStateAssignment(trimmedLine: string): { stateName: string; setterName: string; initialValue: string } | undefined {
+  const match = trimmedLine.match(new RegExp(`^const\\s*\\[\\s*(${IDENTIFIER})\\s*,\\s*(${IDENTIFIER})\\s*\\]\\s*=\\s*useState\\((.*)\\)\\s*;?$`));
+
+  if (!match) {
+    return undefined;
+  }
+
+  return {
+    stateName: match[1],
+    setterName: match[2],
+    initialValue: stripTrailingSemicolon(match[3].trim() || "undefined")
+  };
+}
+
+function matchPropsDestructuring(trimmedLine: string): { props: string[]; source: string } | undefined {
+  const match = trimmedLine.match(/^const\s*\{([^}]*)\}\s*=\s*([^;]+);?$/);
+
+  if (!match) {
+    return undefined;
+  }
+
+  return {
+    props: splitProps(match[1]),
+    source: stripTrailingSemicolon(match[2])
+  };
+}
+
 function matchArrowFunctionParameter(trimmedLine: string): string | undefined {
   const match = trimmedLine.match(new RegExp(`\\(?\\s*(${IDENTIFIER})\\s*\\)?\\s*=>`));
 
@@ -388,16 +484,52 @@ function matchConsoleLog(trimmedLine: string): string | undefined {
 }
 
 function matchReactComponentDefinition(trimmedLine: string): { name: string; props: string[] } | undefined {
-  const match = trimmedLine.match(/^const\s+([A-Z][A-Za-z0-9_$]*)\s*=\s*\(\s*\{([^}]*)\}\s*\)\s*=>/);
+  const arrowMatch = trimmedLine.match(/^const\s+([A-Z][A-Za-z0-9_$]*)\s*=\s*\(?\s*([^=]*?)\s*\)?\s*=>/);
 
-  if (!match) {
-    return undefined;
+  if (arrowMatch) {
+    return {
+      name: arrowMatch[1],
+      props: parseComponentProps(arrowMatch[2])
+    };
   }
 
-  return {
-    name: match[1],
-    props: match[2].split(",").map((prop) => prop.trim()).filter(Boolean)
-  };
+  const functionMatch = trimmedLine.match(/^(?:export\s+default\s+)?function\s+([A-Z][A-Za-z0-9_$]*)\s*\(([^)]*)\)/);
+
+  if (functionMatch) {
+    return {
+      name: functionMatch[1],
+      props: parseComponentProps(functionMatch[2])
+    };
+  }
+
+  return undefined;
+}
+
+function parseComponentProps(parameterText: string): string[] {
+  const trimmedParameters = parameterText.trim();
+
+  if (trimmedParameters.length === 0) {
+    return [];
+  }
+
+  const destructuredProps = trimmedParameters.match(/^\{([^}]*)\}$/);
+
+  if (destructuredProps) {
+    return splitProps(destructuredProps[1]);
+  }
+
+  if (/^props\b/.test(trimmedParameters)) {
+    return ["props"];
+  }
+
+  return [];
+}
+
+function splitProps(value: string): string[] {
+  return value
+    .split(",")
+    .map((prop) => prop.trim().replace(/\s*=.*$/, "").replace(/:.*$/, "").trim())
+    .filter(Boolean);
 }
 
 function matchHookCall(trimmedLine: string): string | undefined {
@@ -406,10 +538,98 @@ function matchHookCall(trimmedLine: string): string | undefined {
   return match?.[1];
 }
 
-function matchConditionalJsxReturn(trimmedLine: string): string | undefined {
-  const match = trimmedLine.match(/^if\s*\(.+\)\s*return\s+<([A-Za-z][A-Za-z0-9.]*)\b.*;?$/);
+function matchDocumentTitleAssignment(trimmedLine: string): string | undefined {
+  const match = trimmedLine.match(/^document\.title\s*=\s*(.+);?$/);
 
-  return match ? `<${match[1]}>` : undefined;
+  return match ? stripTrailingSemicolon(match[1]) : undefined;
+}
+
+function matchLoadingReturn(trimmedLine: string): { condition: string; element: string } | undefined {
+  const match = trimmedLine.match(/^if\s*\(([^)]*(?:loading|Loading|pending|Pending)[^)]*)\)\s*return\s+(<[^;]+);?$/);
+
+  if (!match) {
+    return undefined;
+  }
+
+  return {
+    condition: match[1],
+    element: formatJsxElementName(match[2])
+  };
+}
+
+function matchProtectedRouteReturn(trimmedLine: string): { condition: string; element: string } | undefined {
+  const match = trimmedLine.match(/^if\s*\(([^)]*(?:auth|Auth|user|User|token|Token|premium|Premium|permission|Permission|role|Role)[^)]*)\)\s*return\s+(<Navigate\b[^;]*|<[^;]*(?:Login|SignIn|Unauthorized|Upgrade)[^;]*);?$/);
+
+  if (!match) {
+    return undefined;
+  }
+
+  return {
+    condition: match[1],
+    element: formatJsxElementName(match[2])
+  };
+}
+
+function matchConditionalJsxReturn(trimmedLine: string): { condition: string; element: string } | undefined {
+  const match = trimmedLine.match(/^if\s*\((.+)\)\s*return\s+(<[^;]+);?$/);
+
+  if (!match) {
+    return undefined;
+  }
+
+  return {
+    condition: match[1],
+    element: formatJsxElementName(match[2])
+  };
+}
+
+function matchJsxMapRendering(trimmedLine: string): { sourceName: string; itemName: string } | undefined {
+  const match = trimmedLine.match(new RegExp(`\\b(${IDENTIFIER})\\.map\\(\\s*\\(?\\s*(${IDENTIFIER})`));
+
+  if (!match) {
+    return undefined;
+  }
+
+  return {
+    sourceName: match[1],
+    itemName: match[2]
+  };
+}
+
+function matchConditionalJsxExpression(trimmedLine: string): { condition: string; element: string } | undefined {
+  const match = trimmedLine.match(/\{\s*(.+?)\s*&&\s*(<[^}]+)\}/);
+
+  if (!match) {
+    return undefined;
+  }
+
+  return {
+    condition: match[1],
+    element: formatJsxElementName(match[2])
+  };
+}
+
+function matchTernaryJsxExpression(trimmedLine: string): { condition: string; truthyElement: string } | undefined {
+  const match = trimmedLine.match(/\{\s*(.+?)\s*\?\s*(<[^:]+)\s*:/);
+
+  if (!match) {
+    return undefined;
+  }
+
+  return {
+    condition: match[1],
+    truthyElement: formatJsxElementName(match[2])
+  };
+}
+
+function matchWrapperElement(trimmedLine: string): string | undefined {
+  const match = trimmedLine.match(/^<([A-Z][A-Za-z0-9_.]*(?:Provider|Layout|Wrapper|Guard|Route|Shell|Boundary)?)\b[^/>]*>\s*$/);
+
+  if (!match || match[1] === "Route") {
+    return undefined;
+  }
+
+  return `<${match[1]}>`;
 }
 
 function describeVariableKind(kind: string, explanationLevel: ExplanationLevel): string {
@@ -453,6 +673,28 @@ function describeVariableAssignment(
   return `${kind} creates a named value called ${variableName}. It stores the value from ${expression} so the code can use it later.`;
 }
 
+function explainUseStateAssignment(
+  lineNumber: number,
+  stateName: string,
+  setterName: string,
+  initialValue: string,
+  explanationLevel: ExplanationLevel
+): string {
+  if (/loading|pending/i.test(stateName)) {
+    return `Line ${lineNumber}: ${stateName} is React state for a loading state. ${setterName} changes it, and the starting value is ${initialValue}.`;
+  }
+
+  if (explanationLevel === "advanced") {
+    return `Line ${lineNumber}: useState creates render-affecting state ${stateName} and updater ${setterName}, initialized to ${initialValue}.`;
+  }
+
+  if (explanationLevel === "learning") {
+    return `Line ${lineNumber}: useState gives this component a state value named ${stateName} and a setter named ${setterName}. Updating it asks React to render again.`;
+  }
+
+  return `Line ${lineNumber}: useState lets React remember ${stateName}. Use ${setterName} when that value needs to change on the screen.`;
+}
+
 function describeUseEffect(explanationLevel: ExplanationLevel): string {
   if (explanationLevel === "advanced") {
     return "useEffect schedules post-render side effects based on its dependency array.";
@@ -465,12 +707,45 @@ function describeUseEffect(explanationLevel: ExplanationLevel): string {
   return "useEffect lets React run some code after the screen updates.";
 }
 
+function describeHookCall(hookName: string, explanationLevel: ExplanationLevel): string {
+  const builtInHooks = new Set(["useState", "useEffect", "useMemo", "useCallback", "useRef", "useContext", "useReducer"]);
+  const hookKind = builtInHooks.has(hookName) ? "React hook" : "custom hook";
+
+  if (explanationLevel === "advanced") {
+    return `${hookName} is a ${hookKind}. It composes React behavior and must follow the Rules of Hooks.`;
+  }
+
+  if (explanationLevel === "learning") {
+    return `${hookName} is a ${hookKind}. Hooks let components use React features or shared reusable logic.`;
+  }
+
+  return `${hookName} is a ${hookKind}. A hook is a helper that gives a component extra React behavior.`;
+}
+
 function stripTrailingSemicolon(value: string): string {
   return value.trim().replace(/;$/, "");
 }
 
 function formatArray(values: number[]): string {
   return `[${values.map((value) => Number.isInteger(value) ? String(value) : String(Number(value.toFixed(4)))).join(", ")}]`;
+}
+
+function formatList(values: string[]): string {
+  if (values.length === 0) {
+    return "values";
+  }
+
+  if (values.length === 1) {
+    return values[0];
+  }
+
+  return `${values.slice(0, -1).join(", ")} and ${values[values.length - 1]}`;
+}
+
+function formatJsxElementName(value: string): string {
+  const match = value.match(/^<\s*([A-Za-z][A-Za-z0-9_.]*)/);
+
+  return match ? `<${match[1]}>` : value.trim();
 }
 
 function escapeRegExp(value: string): string {

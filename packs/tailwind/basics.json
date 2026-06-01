@@ -4,32 +4,65 @@
     {
       "term": "className",
       "plainEnglish": "The JSX attribute where React components usually put CSS class names.",
-      "confusion": "In JSX, use className instead of the HTML attribute class."
+      "beginnerExplanation": "className is where JSX puts styling class names.",
+      "learningExplanation": "className passes CSS class names to the rendered HTML element.",
+      "advancedExplanation": "className maps to the DOM class attribute in React's JSX model.",
+      "confusion": "In JSX, use className instead of the HTML attribute class.",
+      "example": "<div className=\"p-4 text-sm\">"
     },
     {
       "term": "flex",
       "plainEnglish": "A Tailwind utility that turns an element into a flexbox layout container.",
-      "confusion": "Flex affects how the element's children are arranged, not the element's own text style."
+      "beginnerExplanation": "flex helps arrange child elements in a row or column.",
+      "learningExplanation": "flex applies CSS display: flex so children can be aligned and spaced.",
+      "advancedExplanation": "flex establishes a flex formatting context for the element's children.",
+      "confusion": "Flex affects how the element's children are arranged, not the element's own text style.",
+      "example": "className=\"flex items-center gap-2\""
     },
     {
       "term": "grid",
       "plainEnglish": "A Tailwind utility that turns an element into a CSS grid layout container.",
-      "confusion": "Grid usually needs column or row utilities to describe the layout."
+      "beginnerExplanation": "grid helps arrange child elements in rows and columns.",
+      "learningExplanation": "grid applies CSS display: grid, usually with column or gap utilities.",
+      "advancedExplanation": "grid establishes a CSS grid formatting context.",
+      "confusion": "Grid usually needs column or row utilities to describe the layout.",
+      "example": "className=\"grid grid-cols-2 gap-4\""
     },
     {
       "term": "p-4",
       "plainEnglish": "A Tailwind spacing utility that adds padding on all sides.",
-      "confusion": "The number is from Tailwind's spacing scale, not always direct pixels."
+      "beginnerExplanation": "p-4 adds space inside the element on every side.",
+      "learningExplanation": "p-4 applies padding from Tailwind's spacing scale.",
+      "advancedExplanation": "p-4 maps to a generated padding utility from the configured spacing scale.",
+      "confusion": "The number is from Tailwind's spacing scale, not always direct pixels.",
+      "example": "className=\"p-4\""
     },
     {
       "term": "text-sm",
       "plainEnglish": "A Tailwind utility that makes text use a small font size.",
-      "confusion": "Text utilities can control size, color, alignment, and more, so read the full class name."
+      "beginnerExplanation": "text-sm makes text smaller.",
+      "learningExplanation": "text-sm applies Tailwind's small text size and line-height.",
+      "advancedExplanation": "text-sm maps to the configured font-size token for small text.",
+      "confusion": "Text utilities can control size, color, alignment, and more, so read the full class name.",
+      "example": "className=\"text-sm text-gray-600\""
     },
     {
       "term": "rounded",
       "plainEnglish": "A Tailwind utility that adds rounded corners.",
-      "confusion": "Rounded changes the border radius. It does not add a visible border by itself."
+      "beginnerExplanation": "rounded makes corners less sharp.",
+      "learningExplanation": "rounded applies a border-radius value.",
+      "advancedExplanation": "rounded maps to the default border-radius token.",
+      "confusion": "Rounded changes the border radius. It does not add a visible border by itself.",
+      "example": "className=\"rounded border\""
+    },
+    {
+      "term": "gap",
+      "plainEnglish": "A Tailwind utility family that adds space between flex or grid children.",
+      "beginnerExplanation": "gap adds space between items inside a flex or grid container.",
+      "learningExplanation": "gap utilities set row and column gaps between layout children.",
+      "advancedExplanation": "gap maps to CSS gap values in flex and grid layout contexts.",
+      "confusion": "Gap affects space between children, not padding inside the container.",
+      "example": "className=\"flex gap-3\""
     }
   ]
 }

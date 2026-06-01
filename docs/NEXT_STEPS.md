@@ -3,19 +3,19 @@
 ## What Currently Works
 
 - Setup guide with learning level selection
-- Local Explain Selection for beginner JavaScript and React/JSX patterns
+- Local Explain Selection for beginner JavaScript and expanded React/JSX patterns
 - Hover explanations for `.js`, `.jsx`, `.ts`, and `.tsx`
 - Explain Command for common Git and npm commands
 - Project Analysis for `package.json` scripts, dependencies, tools, and suggested packs
 - Refresh Project Scan and `package.json` dependency watcher
-- Local bundled pack registry with install/uninstall/reset state stored in VS Code global state
+- Local bundled pack registry with richer starter content and install/uninstall/reset state stored in VS Code global state
 - Manage Packs and Install Suggested Packs commands
 - Optional AI explanations with SecretStorage API key handling and local fallback
 
 ## Known Limitations
 
 - Local code explanation is pattern-based, not a full JavaScript parser.
-- React/JSX fallback covers common patterns but not all real-world component structures.
+- React/JSX fallback covers more common patterns, but it is still not a full React parser.
 - Pack installation only enables bundled JSON/content packs.
 - There is no real internet download, marketplace, checksum, signature, or trust review flow.
 - Project analysis supports `package.json` projects only.
@@ -33,11 +33,12 @@
 - Manage Packs install, uninstall, and reset flows
 - Setup guide recommended pack install buttons
 - Analyze Project suggested pack status before and after `DevTrail: Install Suggested Packs`
-- Hover and Explain Selection behavior after installing React, TypeScript, or Tailwind packs
+- Hover and Explain Selection behavior after installing React, TypeScript, Tailwind, Vite, Git, or npm packs
+- Beginner, Learning, and Advanced wording for local explanations and hovers
 - Core JavaScript fallback after resetting installed packs
 - No workspace and no `package.json` warning paths
 
-## Wait Until After v0.1 Alpha
+## Wait Until After v0.2 Alpha
 
 - Real pack marketplace or download system
 - Remote pack checksum and signature verification

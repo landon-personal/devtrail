@@ -77,5 +77,10 @@ function renderHoverMarkdown(term: KnowledgeTerm): vscode.MarkdownString {
     markdown.appendText(term.confusion);
   }
 
+  if (term.example?.trim()) {
+    markdown.appendMarkdown("\n\n**Example:** ");
+    markdown.appendCodeblock(term.example.trim());
+  }
+
   return markdown;
 }

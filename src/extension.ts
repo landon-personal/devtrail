@@ -73,7 +73,7 @@ interface AISettings {
 }
 
 interface PackActionMessage {
-  type: "installPack" | "uninstallPack";
+  type: "installPack" | "uninstallPack" | "resetInstalledPacks";
   packId: string;
 }
 
@@ -734,6 +734,12 @@ async function buildManagePacksModel(context: vscode.ExtensionContext): Promise<
 }
 
 async function applyPackAction(context: vscode.ExtensionContext, message: PackActionMessage): Promise<void> {
+  if (message.type === "resetInstalledPacks") {
+    await resetInstalledPacks(context);
+    vscode.window.showInformationMessage("DevTrail reset installed packs. JavaScript basics still work as a safe fallback.");
+    return;
+  }
+
   if (message.type === "installPack") {
     const wasInstalled = await installPack(context, message.packId);
 
@@ -1070,6 +1076,10 @@ function isPackActionMessage(message: unknown): message is PackActionMessage {
   }
 
   const maybeMessage = message as { type?: unknown; packId?: unknown };
+
+  if (maybeMessage.type === "resetInstalledPacks") {
+    return true;
+  }
 
   return (maybeMessage.type === "installPack" || maybeMessage.type === "uninstallPack") &&
     typeof maybeMessage.packId === "string";

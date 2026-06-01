@@ -10,7 +10,7 @@
         "package.json",
         "javascript"
       ],
-      "version": "0.1.0",
+      "version": "0.2.0",
       "status": "bundled",
       "tags": [
         "javascript",
@@ -27,7 +27,7 @@
       "relatedPackages": [
         "typescript"
       ],
-      "version": "0.1.0",
+      "version": "0.2.0",
       "status": "bundled",
       "tags": [
         "typescript",
@@ -46,7 +46,7 @@
         "react-dom",
         "@types/react"
       ],
-      "version": "0.1.0",
+      "version": "0.2.0",
       "status": "bundled",
       "tags": [
         "react",
@@ -63,7 +63,7 @@
       "relatedPackages": [
         "next"
       ],
-      "version": "0.1.0",
+      "version": "0.2.0",
       "status": "bundled",
       "tags": [
         "nextjs",
@@ -81,7 +81,7 @@
         "vite",
         "@vitejs/plugin-react"
       ],
-      "version": "0.1.0",
+      "version": "0.2.0",
       "status": "bundled",
       "tags": [
         "vite",
@@ -100,7 +100,7 @@
         "@tailwindcss/postcss",
         "@tailwindcss/vite"
       ],
-      "version": "0.1.0",
+      "version": "0.2.0",
       "status": "bundled",
       "tags": [
         "tailwind",
@@ -117,7 +117,7 @@
       "relatedPackages": [
         "express"
       ],
-      "version": "0.1.0",
+      "version": "0.2.0",
       "status": "bundled",
       "tags": [
         "express",
@@ -135,7 +135,7 @@
         "package.json",
         "npm"
       ],
-      "version": "0.1.0",
+      "version": "0.2.0",
       "status": "bundled",
       "tags": [
         "npm",
@@ -152,7 +152,7 @@
       "relatedPackages": [
         "git"
       ],
-      "version": "0.1.0",
+      "version": "0.2.0",
       "status": "bundled",
       "tags": [
         "git",
@@ -170,7 +170,7 @@
         "vscode",
         "@types/vscode"
       ],
-      "version": "0.1.0",
+      "version": "0.2.0",
       "status": "bundled",
       "tags": [
         "vscode",

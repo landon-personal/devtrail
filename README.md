@@ -8,6 +8,7 @@ It is for people learning JavaScript, TypeScript, React, Git, npm, and modern we
 
 - `DevTrail: Open Setup Guide`: guided onboarding for experience level, project scan, suggested packs, and next steps.
 - `DevTrail: Explain Selection`: explains selected JavaScript, TypeScript, React, or JSX code.
+- Improved local React/JSX explanations for components, props, children, hooks, routes, loading states, protected routes, wrapper components, and JSX list rendering.
 - Hover explanations: short explanations for known terms in `.js`, `.jsx`, `.ts`, and `.tsx` files.
 - `DevTrail: Explain Command`: explains installed Git and npm command packs.
 - `DevTrail: Analyze Project`: reads `package.json` and explains scripts, dependencies, tools, and suggested packs.
@@ -89,6 +90,7 @@ Settings:
 - `devtrail.ai.enabled`: default `false`
 - `devtrail.explanationLevel`: default `beginner`
 - `devtrail.ai.model`: default `gpt-5-mini`
+- `devtrail.ai.structuredModel`: default `gpt-4o-mini`; used for structured AI explanation formatting
 - `devtrail.ai.speedMode`: `balanced` or `fast`
 - `devtrail.ai.slowWarningMs`: default `5000`; shows Keep waiting and Use local explanation choices when AI is slow
 - `devtrail.ai.maxSelectedCharacters`: default `6000`
@@ -113,7 +115,7 @@ DevTrail does not include telemetry, analytics, accounts, cloud sync, payments, 
 
 ## Bundled Packs
 
-Packs teach DevTrail about languages, tools, and libraries. In v0.1 alpha, packs are bundled with the extension and installed into local VS Code extension state.
+Packs teach DevTrail about languages, tools, and libraries. In v0.2 alpha, packs are bundled with the extension and installed into local VS Code extension state. Starter packs now include beginner wording, level-aware wording where helpful, common mistakes, and small examples.
 
 Current bundled packs:
 
@@ -128,7 +130,10 @@ Current bundled packs:
 - Git Basics
 - VS Code Extension Basics
 
+Run `DevTrail: Manage Packs` to install, uninstall, or reset bundled packs. JavaScript Basics remains available as a safe local fallback.
+
 See [docs/PACK_SECURITY.md](docs/PACK_SECURITY.md) for pack security rules.
+See [docs/TESTER_FEEDBACK.md](docs/TESTER_FEEDBACK.md) for safe alpha feedback guidance.
 
 ## Current Limitations
 
@@ -142,8 +147,8 @@ See [docs/PACK_SECURITY.md](docs/PACK_SECURITY.md) for pack security rules.
 
 ## Roadmap
 
-- Improve local JavaScript, TypeScript, and React explanation quality.
-- Expand bundled packs with more beginner terms and patterns.
+- Continue improving local JavaScript, TypeScript, and React explanation quality.
+- Expand bundled packs with more framework-specific beginner patterns.
 - Add focused automated tests around explanation and pack logic.
 - Add safer remote pack distribution later with schema validation, checksums, signatures, and trust metadata.
 - Prepare public documentation and a simple download page after the GitHub alpha is stable.

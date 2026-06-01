@@ -4,32 +4,65 @@
     {
       "term": "type",
       "plainEnglish": "Creates a TypeScript name for the shape of a value.",
-      "confusion": "A type helps the editor and compiler. It does not exist as a real value at runtime."
+      "beginnerExplanation": "type lets you give a name to the kind of value your code expects.",
+      "learningExplanation": "type creates an alias for a value shape, union, primitive, or other type expression.",
+      "advancedExplanation": "type aliases compose structural types, unions, intersections, mapped types, and more.",
+      "confusion": "A type helps the editor and compiler. It does not exist as a real value at runtime.",
+      "example": "type User = { name: string; isAdmin: boolean };"
     },
     {
       "term": "interface",
       "plainEnglish": "Describes the shape an object should have, including property names and value types.",
-      "confusion": "Interfaces describe structure. They do not create objects by themselves."
+      "beginnerExplanation": "interface describes what properties an object should have.",
+      "learningExplanation": "interface declares an object shape that values and classes can satisfy.",
+      "advancedExplanation": "interface defines an extendable structural contract and can merge declarations.",
+      "confusion": "Interfaces describe structure. They do not create objects by themselves.",
+      "example": "interface User {\n  name: string;\n}"
     },
     {
       "term": "string",
       "plainEnglish": "A TypeScript type for text values.",
-      "confusion": "Use string for text, not String with a capital S in normal type annotations."
+      "beginnerExplanation": "string means the value should be text.",
+      "learningExplanation": "string is the primitive type for text values.",
+      "advancedExplanation": "string describes primitive text values, not the boxed String object.",
+      "confusion": "Use string for text, not String with a capital S in normal type annotations.",
+      "example": "const title: string = \"Home\";"
     },
     {
       "term": "number",
       "plainEnglish": "A TypeScript type for numeric values.",
-      "confusion": "TypeScript uses number for integers and decimals."
+      "beginnerExplanation": "number means the value should be a number.",
+      "learningExplanation": "number covers JavaScript numeric values, including integers and decimals.",
+      "advancedExplanation": "number maps to JavaScript's double-precision numeric type.",
+      "confusion": "TypeScript uses number for integers and decimals.",
+      "example": "const count: number = 3;"
     },
     {
       "term": "boolean",
       "plainEnglish": "A TypeScript type for true-or-false values.",
-      "confusion": "Boolean values are true or false, not the text strings \"true\" or \"false\"."
+      "beginnerExplanation": "boolean means the value should be true or false.",
+      "learningExplanation": "boolean is the type for true-or-false logic.",
+      "advancedExplanation": "boolean represents the two primitive values true and false.",
+      "confusion": "Boolean values are true or false, not the text strings \"true\" or \"false\".",
+      "example": "const isOpen: boolean = false;"
     },
     {
       "term": "optional",
       "plainEnglish": "A property marked with ? can be missing or undefined.",
-      "confusion": "Optional does not mean any value is allowed. The value still has the type you wrote."
+      "beginnerExplanation": "optional means this property might not be there.",
+      "learningExplanation": "A ? marks a property as optional, so object values may omit it.",
+      "advancedExplanation": "Optional properties are modeled as possibly absent and commonly read as value | undefined.",
+      "confusion": "Optional does not mean any value is allowed. The value still has the type you wrote.",
+      "example": "type User = { nickname?: string };"
+    },
+    {
+      "term": "generic",
+      "plainEnglish": "A type pattern that can work with different value types.",
+      "beginnerExplanation": "A generic is like a blank type slot that gets filled in later.",
+      "learningExplanation": "Generics let functions, components, or types keep relationships between input and output types.",
+      "advancedExplanation": "Generics parameterize type declarations and preserve type information across reusable abstractions.",
+      "confusion": "A generic is not a runtime argument. It is for TypeScript's checker.",
+      "example": "function first<T>(items: T[]): T {\n  return items[0];\n}"
     }
   ]
 }

@@ -45,6 +45,30 @@ function buildSummary(
     return "This code appears to make a network request and work with the result.";
   }
 
+  if (/<Route\b|<Routes\b|<BrowserRouter\b|<RouterProvider\b/.test(trimmedCode)) {
+    if (explanationLevel === "advanced") {
+      return "This code configures React Router so URLs render specific UI branches.";
+    }
+
+    return "This code sets up routes, which tell the React app what screen to show for each URL.";
+  }
+
+  if (/<Navigate\b/.test(trimmedCode) || /return\s+<[^>]*(Login|SignIn|Unauthorized|Upgrade)/.test(trimmedCode)) {
+    if (explanationLevel === "advanced") {
+      return "This code conditionally redirects or gates access to a React route.";
+    }
+
+    return "This code appears to protect a page by sending some users somewhere else.";
+  }
+
+  if (/document\.title\s*=/.test(trimmedCode)) {
+    if (explanationLevel === "advanced") {
+      return "This code updates document metadata, likely as a React side effect.";
+    }
+
+    return "This code changes the browser tab title, often so it matches the current page.";
+  }
+
   if (looksLikeReactComponent(trimmedCode)) {
     if (explanationLevel === "advanced") {
       return "This code defines a React component and returns JSX for rendering.";
@@ -59,6 +83,14 @@ function buildSummary(
     }
 
     return "This code appears to run React side-effect logic after the component renders.";
+  }
+
+  if (/\buse[A-Z][A-Za-z0-9_]*\s*\(/.test(trimmedCode)) {
+    if (explanationLevel === "advanced") {
+      return "This code uses React hook-style functions to compose component behavior.";
+    }
+
+    return "This code uses hooks, which are helper functions that give React components extra behavior.";
   }
 
   if (trimmedCode.includes(".map(") && trimmedCode.includes("console.log(")) {
@@ -152,6 +184,18 @@ function tuneKnowledgeTermsForLevel(
 }
 
 function getLevelSpecificDefinition(term: KnowledgeTerm, explanationLevel: ExplanationLevel): string {
+  if (explanationLevel === "advanced" && term.advancedExplanation) {
+    return term.advancedExplanation;
+  }
+
+  if (explanationLevel === "learning" && term.learningExplanation) {
+    return term.learningExplanation;
+  }
+
+  if (explanationLevel === "beginner" && term.beginnerExplanation) {
+    return term.beginnerExplanation;
+  }
+
   const definition = LEVEL_DEFINITIONS[term.term]?.[explanationLevel];
 
   return definition ?? term.plainEnglish;

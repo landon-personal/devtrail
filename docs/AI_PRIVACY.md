@@ -11,6 +11,7 @@ DevTrail is local-first by default. Local explanations, hover explanations, comm
 - Dependency refresh checks
 - Local Explain Selection fallback output
 - OpenAI API keys stored in VS Code SecretStorage
+- Bundled pack install state and level-specific pack content
 
 DevTrail does not store API keys in `package.json`, VS Code settings JSON, source files, logs, or webviews.
 

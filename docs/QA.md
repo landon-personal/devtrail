@@ -1,6 +1,6 @@
 # DevTrail Manual QA
 
-Use this checklist before a v0.1 alpha build.
+Use this checklist before a v0.2 alpha build.
 
 ## Setup Guide
 
@@ -36,13 +36,16 @@ Use this checklist before a v0.1 alpha build.
 
 1. Run `DevTrail: Manage Packs`.
 2. Confirm available bundled packs are shown with category, description, status, and install buttons.
-3. Click Install for `React Basics`.
-4. Confirm the panel refreshes and shows `React Basics` as Installed.
-5. Click Uninstall for `React Basics`.
-6. Confirm the panel refreshes and shows `React Basics` as Not installed.
-7. Run `DevTrail: Reset Installed Packs`.
-8. Reopen `DevTrail: Manage Packs` and confirm installed statuses are cleared.
-9. Open the setup guide in a project with suggested packs and confirm Install buttons work there too.
+3. Confirm the top copy says: `Packs teach DevTrail about the languages, tools, and libraries your project uses.`
+4. Confirm installed, not installed, and suggested counts are visible.
+5. Confirm suggested packs appear in their own section when a `package.json` project is open.
+6. Click Install for `React Basics`.
+7. Confirm the panel refreshes and shows `React Basics` as Installed.
+8. Click Uninstall for `React Basics`.
+9. Confirm the panel refreshes and shows `React Basics` as Not installed.
+10. Click `Reset installed packs` in the Manage Packs panel.
+11. Confirm installed statuses are cleared and JavaScript basics still work.
+12. Open the setup guide in a project with suggested packs and confirm Install locally buttons work there too.
 
 ## Explain Selected JavaScript
 
@@ -62,6 +65,25 @@ Use this checklist before a v0.1 alpha build.
 3. Run `DevTrail: Explain Selection`.
 4. Confirm blank lines are not explained.
 5. Confirm DevTrail explains `numbers`, `map`, `number`, `return number * 2`, `doubled`, and `console.log`.
+
+## Explain React And JSX Locally
+
+1. Disable AI with `DevTrail: Disable AI Explanations`.
+2. Run `DevTrail: Manage Packs` and install `React Basics`.
+3. Open a `.jsx` or `.tsx` file.
+4. Select a component that uses destructured props, such as `const Layout = ({ children }) => {`.
+5. Run `DevTrail: Explain Selection`.
+6. Confirm DevTrail explains the component, props, and `children` as nested content.
+7. Select code with `useState` and a loading state.
+8. Confirm DevTrail explains state, setter functions, and early loading returns.
+9. Select code with `useEffect(() => { document.title = ... }, [...])`.
+10. Confirm DevTrail explains the effect and browser tab title update.
+11. Select code with `.map((item) => <Card ... />)`.
+12. Confirm DevTrail explains JSX list rendering and the current item variable.
+13. Select code with `<Route ... />`, `<Routes>`, or `<Navigate ... />`.
+14. Confirm DevTrail explains React Router route mapping or redirect behavior.
+15. Select a protected-route style line such as `if (!isPremium) return <Navigate to="/upgrade" />;`.
+16. Confirm DevTrail explains that the page is gated and redirects some users.
 
 ## Hover Known Terms
 

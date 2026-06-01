@@ -4,47 +4,119 @@
     {
       "term": "const",
       "plainEnglish": "Creates a variable name that cannot be reassigned to a different value.",
-      "confusion": "The value can still be mutable. For example, a const array can still have items pushed into it."
+      "beginnerExplanation": "const creates a named value. You can read it later, but you usually do not reassign it.",
+      "learningExplanation": "const declares a block-scoped variable binding that cannot be reassigned.",
+      "advancedExplanation": "const creates an immutable binding, not an immutable value.",
+      "confusion": "The value can still be mutable. For example, a const array can still have items pushed into it.",
+      "example": "const name = \"DevTrail\";"
     },
     {
       "term": "let",
       "plainEnglish": "Creates a variable whose value can be reassigned later.",
-      "confusion": "Use let when the value really needs to change; otherwise const is usually clearer."
+      "beginnerExplanation": "let creates a named value that you are allowed to change later.",
+      "learningExplanation": "let declares a block-scoped variable binding that can be reassigned.",
+      "advancedExplanation": "let creates a mutable block-scoped binding.",
+      "confusion": "Use let when the value really needs to change; otherwise const is usually clearer.",
+      "example": "let count = 0;\ncount = count + 1;"
     },
     {
       "term": "function",
       "plainEnglish": "Defines a reusable block of code that can be called by name.",
-      "confusion": "Defining a function does not run it. The function runs only when it is called."
+      "beginnerExplanation": "function defines steps you can run later by calling the function name.",
+      "learningExplanation": "function declares reusable behavior with inputs, a body, and an optional return value.",
+      "advancedExplanation": "function creates callable behavior with its own scope and return path.",
+      "confusion": "Defining a function does not run it. The function runs only when it is called.",
+      "example": "function greet(name) {\n  return `Hi ${name}`;\n}"
+    },
+    {
+      "term": "return",
+      "plainEnglish": "Sends a value back from a function.",
+      "beginnerExplanation": "return sends a result back to the code that called the function.",
+      "learningExplanation": "return exits the current function and provides its result.",
+      "advancedExplanation": "return terminates function execution with a result value.",
+      "confusion": "Code after return in the same block usually will not run.",
+      "example": "return total;"
+    },
+    {
+      "term": "array",
+      "plainEnglish": "An ordered list of values.",
+      "beginnerExplanation": "An array is a list of values kept in order.",
+      "learningExplanation": "An array is an ordered collection you can loop over, map, filter, or reduce.",
+      "advancedExplanation": "An array is an indexed ordered collection with built-in iteration methods.",
+      "confusion": "Array positions start at 0, so the first item is items[0].",
+      "example": "const numbers = [1, 2, 3];"
+    },
+    {
+      "term": "object",
+      "plainEnglish": "A value that groups related properties by name.",
+      "beginnerExplanation": "An object stores related values using labels called properties.",
+      "learningExplanation": "An object is a collection of key-value properties.",
+      "advancedExplanation": "Objects are reference values with prototype-based property lookup.",
+      "confusion": "Objects use property names, while arrays usually use numeric positions.",
+      "example": "const user = { name: \"Ava\", role: \"admin\" };"
     },
     {
       "term": "async",
       "plainEnglish": "Marks a function as asynchronous, so it returns a Promise.",
-      "confusion": "Async does not make code run on a separate thread. It helps work with operations that finish later."
+      "beginnerExplanation": "async means the function may wait for something that finishes later.",
+      "learningExplanation": "async makes a function return a Promise and lets you use await inside it.",
+      "advancedExplanation": "async wraps the function result in a Promise and enables await syntax.",
+      "confusion": "Async does not make code run on a separate thread. It helps work with operations that finish later.",
+      "example": "async function loadUser() {\n  return fetch(\"/api/user\");\n}"
     },
     {
       "term": "await",
       "plainEnglish": "Pauses an async function until a Promise settles, then gives back the result.",
-      "confusion": "Await can only be used in async functions or in modules that support top-level await."
+      "beginnerExplanation": "await waits for a Promise result before moving to the next line.",
+      "learningExplanation": "await pauses the async function until the Promise fulfills or rejects.",
+      "advancedExplanation": "await unwraps a Promise inside async control flow and resumes after settlement.",
+      "confusion": "Await can only be used in async functions or in modules that support top-level await.",
+      "example": "const response = await fetch(\"/api/user\");"
+    },
+    {
+      "term": "Promise",
+      "plainEnglish": "A JavaScript object that represents work that may finish later.",
+      "beginnerExplanation": "A Promise is a placeholder for a value you may get later.",
+      "learningExplanation": "A Promise represents an asynchronous result that can fulfill or reject.",
+      "advancedExplanation": "A Promise is a thenable state machine for asynchronous completion.",
+      "confusion": "A Promise is not the final value yet. You usually use await or then to read the result.",
+      "example": "const data = await response.json();"
     },
     {
       "term": "map",
       "plainEnglish": "Creates a new array by transforming each item in an existing array.",
-      "confusion": "Map is for changing each item into a new value, not for filtering items out."
+      "beginnerExplanation": "map loops through each item and creates a new array from the returned values.",
+      "learningExplanation": "map calls a callback for every item and returns a new array of callback results.",
+      "advancedExplanation": "map is a non-mutating array transformation that preserves item count.",
+      "confusion": "Map is for changing each item into a new value, not for filtering items out.",
+      "example": "const doubled = numbers.map((number) => number * 2);"
     },
     {
       "term": "filter",
       "plainEnglish": "Creates a new array containing only the items that pass a true-or-false test.",
-      "confusion": "Filter keeps or removes whole items. It does not transform the kept items."
+      "beginnerExplanation": "filter keeps only the items where your test returns true.",
+      "learningExplanation": "filter calls a predicate for each item and returns the items whose predicate result is truthy.",
+      "advancedExplanation": "filter is a non-mutating array selection method driven by a predicate.",
+      "confusion": "Filter keeps or removes whole items. It does not transform the kept items.",
+      "example": "const adults = users.filter((user) => user.age >= 18);"
     },
     {
       "term": "reduce",
       "plainEnglish": "Combines array items into one result, such as a total, object, or grouped value.",
-      "confusion": "Reduce can be powerful but hard to read. For beginners, a loop is sometimes clearer."
+      "beginnerExplanation": "reduce walks through a list and builds one final answer.",
+      "learningExplanation": "reduce passes an accumulator through each item and returns one accumulated result.",
+      "advancedExplanation": "reduce folds an array into a single accumulated value.",
+      "confusion": "Reduce can be powerful but hard to read. For beginners, a loop is sometimes clearer.",
+      "example": "const total = prices.reduce((sum, price) => sum + price, 0);"
     },
     {
       "term": "fetch",
       "plainEnglish": "Starts a network request and returns a Promise for the response.",
-      "confusion": "Fetch does not directly return the final data. You usually need to call response.json() or response.text()."
+      "beginnerExplanation": "fetch asks another URL for data and gives you a Promise while you wait.",
+      "learningExplanation": "fetch performs an HTTP request and resolves to a Response object.",
+      "advancedExplanation": "fetch starts an HTTP request and returns a Promise<Response>.",
+      "confusion": "Fetch does not directly return the final data. You usually need to call response.json() or response.text().",
+      "example": "const response = await fetch(\"/api/items\");"
     }
   ]
 }
