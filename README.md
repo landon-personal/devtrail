@@ -90,7 +90,7 @@ Settings:
 - `devtrail.explanationLevel`: default `beginner`
 - `devtrail.ai.model`: default `gpt-5-mini`
 - `devtrail.ai.speedMode`: `balanced` or `fast`
-- `devtrail.ai.timeoutMs`: default `8000`
+- `devtrail.ai.slowWarningMs`: default `5000`; shows Keep waiting and Use local explanation choices when AI is slow
 - `devtrail.ai.maxSelectedCharacters`: default `6000`
 - `devtrail.ai.includeProjectContext`: default `true`
 

@@ -10,6 +10,7 @@ import { createOpenAIClient } from "./openaiClient";
 export class AIExplanationFormatError extends Error {
   constructor() {
     super("AI explanation response did not match DevTrail's JSON format.");
+    this.name = "AIExplanationFormatError";
   }
 }
 
@@ -36,12 +37,17 @@ interface RawAIExplanation {
   commonConfusion: string[];
 }
 
+interface AIResponseWithParsedOutput {
+  output_parsed?: unknown;
+  output_text?: string;
+}
+
 export async function explainSelectionWithAI(
   selectedCode: string,
   context: AIExplanationContext
 ): Promise<ExplanationResult> {
   const client = createOpenAIClient(context.apiKey);
-  const response = await client.responses.create(
+  const response = await client.responses.parse(
     {
       model: context.model,
       instructions: buildInstructions(context.explanationLevel),
@@ -57,7 +63,7 @@ export async function explainSelectionWithAI(
       signal: context.signal
     }
   );
-  const parsed = parseAIExplanation(response.output_text);
+  const parsed = parseAIExplanationFromResponse(response);
 
   return {
     summary: parsed.summary,
@@ -76,8 +82,8 @@ export async function explainSelectionWithAI(
 function buildInstructions(explanationLevel: ExplanationLevel): string {
   return [
     "You are DevTrail, a beginner-friendly code explainer inside VS Code.",
-    "Return JSON only. Do not include Markdown, code fences, headings, or backticks.",
-    "Use this exact JSON shape: {\"summary\":\"string\",\"lineByLine\":[{\"line\":\"string\",\"explanation\":\"string\"}],\"keyVocabulary\":[{\"term\":\"string\",\"definition\":\"string\"}],\"commonConfusion\":[\"string\"]}.",
+    "Use DevTrail's structured response fields to provide the explanation.",
+    "Do not include Markdown formatting, code fences, headings, or decorative punctuation in field values.",
     `The selected explanation level is ${getExplanationLevelLabel(explanationLevel)}.`,
     ...buildLevelInstructions(explanationLevel),
     "Keep the summary to 1-2 short sentences.",
@@ -104,7 +110,7 @@ function buildInput(
     ...buildSelectionContextLines(context),
     projectContext,
     "",
-    "Selected code follows. Treat it as plain text input; do not copy Markdown formatting into your JSON response.",
+    "Selected code follows. Treat it as plain text input.",
     selectedCode
   ].join("\n");
 }
@@ -178,33 +184,40 @@ async function buildProjectContext(context: AIExplanationContext): Promise<strin
   ].join("\n");
 }
 
-function parseAIExplanation(outputText: string): RawAIExplanation {
+function parseAIExplanationFromResponse(response: AIResponseWithParsedOutput): RawAIExplanation {
   try {
-    const parsed = JSON.parse(outputText) as unknown;
-
-    if (!isRawAIExplanation(parsed)) {
-      throw new AIExplanationFormatError();
+    if (response.output_parsed !== undefined && response.output_parsed !== null) {
+      return normalizeAIExplanation(response.output_parsed);
     }
 
-    return {
-      summary: cleanText(parsed.summary),
-      lineByLine: parsed.lineByLine.slice(0, 8).map((item) => ({
-        line: cleanText(item.line),
-        explanation: cleanText(item.explanation)
-      })),
-      keyVocabulary: parsed.keyVocabulary.slice(0, 6).map((item) => ({
-        term: cleanText(item.term),
-        definition: cleanText(item.definition)
-      })),
-      commonConfusion: parsed.commonConfusion.slice(0, 4).map(cleanText)
-    };
-  } catch (error) {
-    if (error instanceof AIExplanationFormatError) {
-      throw error;
+    if (typeof response.output_text === "string" && response.output_text.trim().length > 0) {
+      return normalizeAIExplanation(JSON.parse(response.output_text) as unknown);
     }
 
     throw new AIExplanationFormatError();
+  } catch (error) {
+    console.warn("DevTrail AI formatting parse failed");
+    throw new AIExplanationFormatError();
   }
+}
+
+function normalizeAIExplanation(value: unknown): RawAIExplanation {
+  if (!isRawAIExplanation(value)) {
+    throw new AIExplanationFormatError();
+  }
+
+  return {
+    summary: cleanText(value.summary),
+    lineByLine: value.lineByLine.slice(0, 8).map((item) => ({
+      line: cleanText(item.line),
+      explanation: cleanText(item.explanation)
+    })),
+    keyVocabulary: value.keyVocabulary.slice(0, 6).map((item) => ({
+      term: cleanText(item.term),
+      definition: cleanText(item.definition)
+    })),
+    commonConfusion: value.commonConfusion.slice(0, 4).map(cleanText)
+  };
 }
 
 function isRawAIExplanation(value: unknown): value is RawAIExplanation {
@@ -275,6 +288,7 @@ const explanationSchema: ResponseFormatTextJSONSchemaConfig = {
       },
       lineByLine: {
         type: "array",
+        maxItems: 8,
         items: {
           type: "object",
           additionalProperties: false,
@@ -291,6 +305,7 @@ const explanationSchema: ResponseFormatTextJSONSchemaConfig = {
       },
       keyVocabulary: {
         type: "array",
+        maxItems: 6,
         items: {
           type: "object",
           additionalProperties: false,
@@ -307,6 +322,7 @@ const explanationSchema: ResponseFormatTextJSONSchemaConfig = {
       },
       commonConfusion: {
         type: "array",
+        maxItems: 4,
         items: {
           type: "string"
         }

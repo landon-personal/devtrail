@@ -82,14 +82,45 @@ export function renderExplanationLoadingHtml(selectedCode: string, explanationLe
   <section class="loading-panel" aria-live="polite">
     <p><strong>DevTrail is reading this code...</strong></p>
     <p>Using AI explanation...</p>
-    <p>This should only take a few seconds.</p>
-    <p class="loading-note">If AI takes too long, DevTrail will fall back to a local explanation.</p>
+    <p class="loading-note">This may take a few seconds.</p>
   </section>
 
   <h2>Selected code</h2>
   <pre><code>${escapeHtml(selectedCode)}</code></pre>
 </body>
 </html>`;
+}
+
+export function renderExplanationSlowWarningHtml(
+  selectedCode: string,
+  explanationLevel: ExplanationLevel,
+  nonce: string
+): string {
+  return renderLoadingStateHtml({
+    selectedCode,
+    explanationLevel,
+    title: "AI is taking longer than expected.",
+    lines: [
+      "You can keep waiting or switch to a local explanation."
+    ],
+    actions: true,
+    nonce
+  });
+}
+
+export function renderExplanationStillWaitingHtml(
+  selectedCode: string,
+  explanationLevel: ExplanationLevel
+): string {
+  return renderLoadingStateHtml({
+    selectedCode,
+    explanationLevel,
+    title: "Still waiting for the AI explanation...",
+    lines: [
+      "DevTrail will show it here as soon as it returns."
+    ],
+    actions: false
+  });
 }
 
 function renderSourceLabel(source: ExplanationResult["source"]): string {
@@ -157,4 +188,107 @@ function renderBaseStyles(): string {
       padding: 10px;
     }
   `;
+}
+
+function renderLoadingStateHtml(options: {
+  selectedCode: string;
+  explanationLevel: ExplanationLevel;
+  title: string;
+  lines: string[];
+  actions: boolean;
+  nonce?: string;
+}): string {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevTrail Explanation</title>
+  <style>
+    ${renderBaseStyles()}
+
+    .loading-panel {
+      border: 1px solid var(--vscode-panel-border);
+      border-radius: 6px;
+      padding: 14px;
+    }
+
+    .loading-panel p {
+      margin: 6px 0;
+    }
+
+    .loading-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    button {
+      background: var(--vscode-button-background);
+      border: 0;
+      border-radius: 6px;
+      color: var(--vscode-button-foreground);
+      cursor: pointer;
+      font: inherit;
+      padding: 7px 10px;
+    }
+
+    button.secondary {
+      background: var(--vscode-button-secondaryBackground);
+      color: var(--vscode-button-secondaryForeground);
+    }
+
+    button:hover {
+      background: var(--vscode-button-hoverBackground);
+    }
+
+    button.secondary:hover {
+      background: var(--vscode-button-secondaryHoverBackground);
+    }
+  </style>
+</head>
+<body>
+  <h1>DevTrail Explanation</h1>
+  <p><strong>Level:</strong> ${escapeHtml(getExplanationLevelLabel(options.explanationLevel))}</p>
+  <section class="loading-panel" aria-live="polite">
+    <p><strong>${escapeHtml(options.title)}</strong></p>
+    ${options.lines.map((line) => `<p>${escapeHtml(line)}</p>`).join("")}
+    ${renderLoadingActions(options.actions)}
+  </section>
+
+  <h2>Selected code</h2>
+  <pre><code>${escapeHtml(options.selectedCode)}</code></pre>
+  ${renderLoadingScript(options.actions, options.nonce)}
+</body>
+</html>`;
+}
+
+function renderLoadingActions(hasActions: boolean): string {
+  if (!hasActions) {
+    return "";
+  }
+
+  return `<div class="loading-actions">
+    <button type="button" data-action="keepWaiting">Keep waiting</button>
+    <button type="button" class="secondary" data-action="useLocalExplanation">Use local explanation</button>
+  </div>`;
+}
+
+function renderLoadingScript(hasActions: boolean, nonce: string | undefined): string {
+  if (!hasActions || !nonce) {
+    return "";
+  }
+
+  return `<script nonce="${escapeHtml(nonce)}">
+    const vscode = acquireVsCodeApi();
+
+    document.querySelectorAll("[data-action]").forEach((button) => {
+      button.addEventListener("click", () => {
+        vscode.postMessage({
+          type: button.dataset.action
+        });
+      });
+    });
+  </script>`;
 }

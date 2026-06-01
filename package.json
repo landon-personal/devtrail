@@ -2,7 +2,7 @@
   "name": "devtrail",
   "displayName": "DevTrail",
   "description": "A local-first learning companion that explains code, terminal commands, and project setup for beginners.",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.2-alpha.0",
   "publisher": "devtrail",
   "license": "MIT",
   "private": true,
@@ -157,12 +157,12 @@
           "default": true,
           "description": "Include limited project context, such as language mode and detected tools, in optional AI explanation requests."
         },
-        "devtrail.ai.timeoutMs": {
+        "devtrail.ai.slowWarningMs": {
           "type": "number",
-          "default": 8000,
+          "default": 5000,
           "minimum": 1000,
           "maximum": 60000,
-          "description": "How long DevTrail waits for an optional AI explanation before falling back to a local explanation."
+          "description": "How long DevTrail waits before showing a friendly slow AI warning with Keep waiting and Use local explanation choices."
         },
         "devtrail.ai.maxSelectedCharacters": {
           "type": "number",

@@ -54,4 +54,6 @@ DevTrail refuses to send selected code to AI when it detects obvious sensitive c
 
 DevTrail also blocks AI requests from `.env` files, common lockfiles, `node_modules`, and hidden secret/config-looking files.
 
-When AI mode is enabled, DevTrail opens a loading view immediately so VS Code does not look frozen. If the request takes longer than `devtrail.ai.timeoutMs` (default `8000`), the user cancels the progress notification, formatting fails, or the AI request fails, DevTrail replaces the loading view with the local explanation.
+When AI mode is enabled, DevTrail opens a loading view immediately so VS Code does not look frozen. If the request takes longer than `devtrail.ai.slowWarningMs` (default `5000`), DevTrail shows a friendly slow warning with two choices: keep waiting, or switch to a local explanation. DevTrail does not automatically send more code or start a second AI request.
+
+If the user cancels the progress notification, chooses local explanation, formatting fails, or the AI request fails, DevTrail replaces the loading view with the local explanation.

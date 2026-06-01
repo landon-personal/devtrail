@@ -32,12 +32,17 @@ import {
 } from "./setup/buildSetupGuideModel";
 import { renderSetupGuideHtml } from "./setup/renderSetupGuideHtml";
 import { renderCommandExplanationHtml } from "./webview/renderCommandExplanationHtml";
-import { renderExplanationHtml, renderExplanationLoadingHtml } from "./webview/renderExplanationHtml";
+import {
+  renderExplanationHtml,
+  renderExplanationLoadingHtml,
+  renderExplanationSlowWarningHtml,
+  renderExplanationStillWaitingHtml
+} from "./webview/renderExplanationHtml";
 
 const WELCOME_PROMPT_STATE_KEY = "devtrail.welcomePromptShown";
 const DEFAULT_AI_MODEL = "gpt-5-mini";
 const FAST_AI_MODEL = "gpt-5-nano";
-const DEFAULT_AI_TIMEOUT_MS = 8000;
+const DEFAULT_AI_SLOW_WARNING_MS = 5000;
 const DEFAULT_AI_MAX_SELECTED_CHARACTERS = 6000;
 
 type AISpeedMode = "balanced" | "fast";
@@ -46,22 +51,20 @@ interface AISettings {
   enabled: boolean;
   model: string;
   includeProjectContext: boolean;
-  timeoutMs: number;
+  slowWarningMs: number;
   maxSelectedCharacters: number;
   speedMode: AISpeedMode;
   hasExplicitModelOverride: boolean;
   explanationLevel: ExplanationLevel;
 }
 
-type AIExplanationOutcome =
-  | { status: "success"; explanation: ExplanationResult }
-  | { status: "canceled" }
-  | { status: "timeout" }
-  | { status: "error"; error: unknown };
-
 interface PackActionMessage {
   type: "installPack" | "uninstallPack";
   packId: string;
+}
+
+interface AIWaitActionMessage {
+  type: "keepWaiting" | "useLocalExplanation";
 }
 
 export function activate(context: vscode.ExtensionContext): void {
@@ -84,32 +87,32 @@ export function activate(context: vscode.ExtensionContext): void {
       return;
     }
 
+    const aiSettings = getAISettings();
+
     // A webview is a custom VS Code panel where extensions can render HTML.
     const panel = vscode.window.createWebviewPanel(
       "devtrailExplanation",
       "DevTrail Explanation",
       vscode.ViewColumn.Beside,
       {
-        enableScripts: false
+        enableScripts: aiSettings.enabled
       }
     );
-
-    const aiSettings = getAISettings();
-    const resolvedKnowledgeTerms = await loadJavaScriptKnowledgePack(context);
 
     if (aiSettings.enabled) {
       panel.webview.html = renderExplanationLoadingHtml(selectedCode, aiSettings.explanationLevel);
     }
 
-    const explanation = await explainSelectedCode(
+    const resolvedKnowledgeTerms = await loadJavaScriptKnowledgePack(context);
+
+    await explainSelectedCode(
       context,
+      panel,
       editor.document,
       selectedCode,
       resolvedKnowledgeTerms,
       aiSettings
     );
-
-    panel.webview.html = renderExplanationHtml(explanation, selectedCode);
   });
 
   const explainTerminalCommand = vscode.commands.registerCommand("devtrail.explainCommand", async () => {
@@ -487,26 +490,32 @@ async function applyPackAction(context: vscode.ExtensionContext, message: PackAc
 
 async function explainSelectedCode(
   context: vscode.ExtensionContext,
+  panel: vscode.WebviewPanel,
   document: vscode.TextDocument,
   selectedCode: string,
   knowledgeTerms: Awaited<ReturnType<typeof loadJavaScriptKnowledgePack>>,
   aiSettings: AISettings
-): Promise<ExplanationResult> {
+): Promise<void> {
   const localExplanation = (notice?: string): ExplanationResult => {
     const explanation = explainSelection(selectedCode, knowledgeTerms, aiSettings.explanationLevel);
 
     return notice ? { ...explanation, notice } : explanation;
   };
+  const renderLocalExplanation = (notice?: string) => {
+    panel.webview.html = renderExplanationHtml(localExplanation(notice), selectedCode);
+  };
 
   if (!aiSettings.enabled) {
-    return localExplanation();
+    renderLocalExplanation();
+    return;
   }
 
   if (selectedCode.length > aiSettings.maxSelectedCharacters) {
     vscode.window.showWarningMessage(
       "This selection is pretty large. DevTrail will explain it locally for now. Try selecting a smaller section for AI."
     );
-    return localExplanation("This selection was larger than the AI size limit, so DevTrail used the local explanation instead.");
+    renderLocalExplanation("This selection was larger than the AI size limit, so DevTrail used the local explanation instead.");
+    return;
   }
 
   const safetyCheck = canSendSelectionToAI(document, selectedCode);
@@ -515,7 +524,8 @@ async function explainSelectedCode(
     vscode.window.showWarningMessage(
       "This selection may contain secrets. DevTrail will not send it to AI. Try selecting only the code you want explained."
     );
-    return localExplanation("This selection may contain secrets, so DevTrail used the local explanation instead.");
+    renderLocalExplanation("This selection may contain secrets, so DevTrail used the local explanation instead.");
+    return;
   }
 
   const apiKey = await getOpenAIApiKey(context);
@@ -530,105 +540,164 @@ async function explainSelectedCode(
       await vscode.commands.executeCommand("devtrail.setOpenAIApiKey");
     }
 
-    return localExplanation("AI is enabled, but no API key is configured, so DevTrail used the local explanation instead.");
+    renderLocalExplanation("AI is enabled, but no API key is configured, so DevTrail used the local explanation instead.");
+    return;
   }
 
-  const outcome = await requestAIExplanationWithProgress(
+  await runAIExplanationWithProgress(
     context,
+    panel,
     document,
     selectedCode,
     apiKey,
-    aiSettings
+    aiSettings,
+    localExplanation
   );
-
-  if (outcome.status === "success") {
-    return outcome.explanation;
-  }
-
-  if (outcome.status === "canceled") {
-    return localExplanation("AI explanation was canceled, so DevTrail used the local explanation instead.");
-  }
-
-  if (outcome.status === "timeout") {
-    return localExplanation("AI took too long, so DevTrail used the local explanation instead.");
-  }
-
-  if (outcome.error instanceof AIExplanationFormatError) {
-    return localExplanation("AI formatting failed, so DevTrail used the local explanation instead.");
-  }
-
-  if (!isAbortLikeError(outcome.error)) {
-    vscode.window.showWarningMessage("DevTrail could not get an AI explanation right now, so it used the local explanation instead.");
-  }
-
-  return localExplanation();
 }
 
-async function requestAIExplanationWithProgress(
+async function runAIExplanationWithProgress(
   context: vscode.ExtensionContext,
+  panel: vscode.WebviewPanel,
   document: vscode.TextDocument,
   selectedCode: string,
   apiKey: string,
-  aiSettings: AISettings
-): Promise<AIExplanationOutcome> {
-  return vscode.window.withProgress(
+  aiSettings: AISettings,
+  localExplanation: (notice?: string) => ExplanationResult
+): Promise<void> {
+  const abortController = new AbortController();
+  let finalResultRendered = false;
+  let slowWarningHandle: ReturnType<typeof setTimeout> | undefined;
+  let webviewMessageSubscription: vscode.Disposable | undefined;
+  let panelDisposeSubscription: vscode.Disposable | undefined;
+  let resolveFinalResult: (() => void) | undefined;
+  const finalResultPromise = new Promise<void>((resolve) => {
+    resolveFinalResult = resolve;
+  });
+
+  const clearSlowWarning = (): void => {
+    if (slowWarningHandle) {
+      clearTimeout(slowWarningHandle);
+      slowWarningHandle = undefined;
+    }
+  };
+
+  const disposeWaitResources = (): void => {
+    clearSlowWarning();
+    webviewMessageSubscription?.dispose();
+    webviewMessageSubscription = undefined;
+    panelDisposeSubscription?.dispose();
+    panelDisposeSubscription = undefined;
+  };
+
+  const resolveFinalResultOnce = (): void => {
+    resolveFinalResult?.();
+    resolveFinalResult = undefined;
+  };
+
+  const finishWithLocal = (notice?: string, abortAIRequest = false): void => {
+    if (finalResultRendered) {
+      return;
+    }
+
+    finalResultRendered = true;
+
+    if (abortAIRequest) {
+      abortController.abort();
+    }
+
+    panel.webview.html = renderExplanationHtml(localExplanation(notice), selectedCode);
+    disposeWaitResources();
+    resolveFinalResultOnce();
+  };
+
+  const finishWithAI = (explanation: ExplanationResult): void => {
+    if (finalResultRendered) {
+      return;
+    }
+
+    finalResultRendered = true;
+    panel.webview.html = renderExplanationHtml(explanation, selectedCode);
+    disposeWaitResources();
+    resolveFinalResultOnce();
+  };
+
+  const finishBecausePanelClosed = (): void => {
+    if (finalResultRendered) {
+      return;
+    }
+
+    finalResultRendered = true;
+    abortController.abort();
+    disposeWaitResources();
+    resolveFinalResultOnce();
+  };
+
+  const showSlowWarning = (): void => {
+    if (finalResultRendered) {
+      return;
+    }
+
+    panel.webview.html = renderExplanationSlowWarningHtml(selectedCode, aiSettings.explanationLevel, createNonce());
+  };
+
+  webviewMessageSubscription = panel.webview.onDidReceiveMessage((message: unknown) => {
+    if (!isAIWaitActionMessage(message) || finalResultRendered) {
+      return;
+    }
+
+    if (message.type === "keepWaiting") {
+      panel.webview.html = renderExplanationStillWaitingHtml(selectedCode, aiSettings.explanationLevel);
+      return;
+    }
+
+    finishWithLocal("You switched to a local explanation while AI was still running.");
+  });
+
+  panelDisposeSubscription = panel.onDidDispose(finishBecausePanelClosed);
+  slowWarningHandle = setTimeout(showSlowWarning, aiSettings.slowWarningMs);
+
+  void explainSelectionWithAI(selectedCode, {
+    extensionContext: context,
+    document,
+    apiKey,
+    model: resolveAIModel(aiSettings),
+    includeProjectContext: aiSettings.includeProjectContext,
+    explanationLevel: aiSettings.explanationLevel,
+    signal: abortController.signal
+  }).then(
+    (explanation) => {
+      finishWithAI(explanation);
+    },
+    (error: unknown) => {
+      if (finalResultRendered || isAbortLikeError(error)) {
+        return;
+      }
+
+      if (error instanceof AIExplanationFormatError) {
+        finishWithLocal("AI formatting failed, so DevTrail used the local explanation instead.");
+        return;
+      }
+
+      vscode.window.showWarningMessage("DevTrail could not get an AI explanation right now, so it used the local explanation instead.");
+      finishWithLocal();
+    }
+  );
+
+  await vscode.window.withProgress(
     {
       location: vscode.ProgressLocation.Notification,
       title: "DevTrail is generating an AI explanation...",
       cancellable: true
     },
-    async (_progress, token): Promise<AIExplanationOutcome> => {
-      const abortController = new AbortController();
-      let timedOut = false;
-      let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
-      let cancellationSubscription: vscode.Disposable | undefined;
-
-      const timeoutPromise = new Promise<AIExplanationOutcome>((resolve) => {
-        timeoutHandle = setTimeout(() => {
-          timedOut = true;
-          abortController.abort();
-          resolve({ status: "timeout" });
-        }, aiSettings.timeoutMs);
+    async (_progress, token): Promise<void> => {
+      const cancellationSubscription = token.onCancellationRequested(() => {
+        finishWithLocal("AI explanation was canceled, so DevTrail used the local explanation instead.", true);
       });
-
-      const cancellationPromise = new Promise<AIExplanationOutcome>((resolve) => {
-        cancellationSubscription = token.onCancellationRequested(() => {
-          abortController.abort();
-          resolve({ status: "canceled" });
-        });
-      });
-
-      const aiPromise = explainSelectionWithAI(selectedCode, {
-        extensionContext: context,
-        document,
-        apiKey,
-        model: resolveAIModel(aiSettings),
-        includeProjectContext: aiSettings.includeProjectContext,
-        explanationLevel: aiSettings.explanationLevel,
-        signal: abortController.signal
-      }).then(
-        (explanation): AIExplanationOutcome => ({ status: "success", explanation }),
-        (error: unknown): AIExplanationOutcome => {
-          if (token.isCancellationRequested) {
-            return { status: "canceled" };
-          }
-
-          if (timedOut) {
-            return { status: "timeout" };
-          }
-
-          return { status: "error", error };
-        }
-      );
 
       try {
-        return await Promise.race([aiPromise, timeoutPromise, cancellationPromise]);
+        await finalResultPromise;
       } finally {
-        if (timeoutHandle) {
-          clearTimeout(timeoutHandle);
-        }
-
-        cancellationSubscription?.dispose();
+        cancellationSubscription.dispose();
       }
     }
   );
@@ -643,7 +712,7 @@ function getAISettings(): AISettings {
     enabled: configuration.get<boolean>("ai.enabled", false),
     model,
     includeProjectContext: configuration.get<boolean>("ai.includeProjectContext", true),
-    timeoutMs: readPositiveNumberSetting(configuration, "ai.timeoutMs", DEFAULT_AI_TIMEOUT_MS),
+    slowWarningMs: readPositiveNumberSetting(configuration, "ai.slowWarningMs", DEFAULT_AI_SLOW_WARNING_MS),
     maxSelectedCharacters: readPositiveNumberSetting(
       configuration,
       "ai.maxSelectedCharacters",
@@ -738,6 +807,17 @@ function isPackActionMessage(message: unknown): message is PackActionMessage {
 
   return (maybeMessage.type === "installPack" || maybeMessage.type === "uninstallPack") &&
     typeof maybeMessage.packId === "string";
+}
+
+function isAIWaitActionMessage(message: unknown): message is AIWaitActionMessage {
+  if (!message || typeof message !== "object") {
+    return false;
+  }
+
+  const maybeMessage = message as { type?: unknown };
+
+  return maybeMessage.type === "keepWaiting" ||
+    maybeMessage.type === "useLocalExplanation";
 }
 
 function showProjectScanProblem(status: "noPackageJson" | "invalidPackageJson"): void {

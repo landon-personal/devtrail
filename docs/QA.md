@@ -111,26 +111,37 @@ Use this checklist before a v0.1 alpha build.
 13. Confirm the final webview says `Source: AI explanation`.
 14. Confirm the output shows the current explanation level.
 15. Confirm the output has clean formatting: summary paragraph, line-by-line ordered list, vocabulary bullets, confusion bullets, and no raw Markdown code fences or strange backtick-heavy text.
-16. Set `devtrail.explanationLevel` to `advanced` or run `DevTrail: Change Explanation Level`.
-17. Run AI Explain Selection again and confirm the output is more concise and technical than Beginner.
-18. Set `devtrail.ai.timeoutMs` to `1`.
-19. Run `DevTrail: Explain Selection` on safe code.
-20. Confirm DevTrail falls back locally and shows `AI took too long, so DevTrail used the local explanation instead.`
-21. Reset `devtrail.ai.timeoutMs` to `8000`.
-22. Run `DevTrail: Explain Selection` again and click Cancel in the progress notification.
-23. Confirm DevTrail falls back locally and shows `AI explanation was canceled, so DevTrail used the local explanation instead.`
-24. Set `devtrail.ai.maxSelectedCharacters` to `20`.
-25. Select more than 20 characters and run `DevTrail: Explain Selection`.
-26. Confirm DevTrail warns that the selection is pretty large and uses the local explanation.
-27. Reset `devtrail.ai.maxSelectedCharacters` to `6000`.
-28. Set `devtrail.ai.speedMode` to `fast` and remove any explicit `devtrail.ai.model` override.
-29. Run `DevTrail: Explain Selection` and confirm the AI path still works. This mode uses `gpt-5-nano` for the fastest responses.
-30. Set `devtrail.ai.speedMode` back to `balanced`.
-31. Select text that looks like a secret, such as `OPENAI_API_KEY=abc123456789`.
-32. Run `DevTrail: Explain Selection`.
-33. Confirm DevTrail refuses to send it to AI and falls back locally.
-34. Run `DevTrail: Clear OpenAI API Key`.
-35. Run `DevTrail: Disable AI Explanations`.
+16. Open `App.jsx`, select a normal React component or JSX return block, and run `DevTrail: Explain Selection`.
+17. Confirm the webview does not show `AI formatting failed` for normal React/JSX code.
+18. Confirm the React/JSX output sections render cleanly without raw JSON, Markdown fences, or unusual backtick formatting.
+19. Set `devtrail.ai.slowWarningMs` to `60000`.
+20. Run AI Explain Selection again and confirm normal AI success renders before any slow warning appears.
+21. Set `devtrail.explanationLevel` to `advanced` or run `DevTrail: Change Explanation Level`.
+22. Run AI Explain Selection again and confirm the output is more concise and technical than Beginner.
+23. Set `devtrail.ai.slowWarningMs` to `1000`.
+24. Run `DevTrail: Explain Selection` on safe code.
+25. If AI is still running after the delay, confirm the webview says `AI is taking longer than expected.` and shows `Keep waiting` and `Use local explanation`.
+26. Click `Keep waiting`.
+27. Confirm the webview says `Still waiting for the AI explanation...` and no second AI request starts.
+28. Run `DevTrail: Explain Selection` again on safe code.
+29. When the slow warning appears, click `Use local explanation`.
+30. Confirm DevTrail renders local output and shows `You switched to a local explanation while AI was still running.`
+31. Confirm a later AI response does not overwrite the local output.
+32. Reset `devtrail.ai.slowWarningMs` to `5000`.
+33. Run `DevTrail: Explain Selection` again and click Cancel in the progress notification.
+34. Confirm DevTrail falls back locally and shows `AI explanation was canceled, so DevTrail used the local explanation instead.`
+35. Set `devtrail.ai.maxSelectedCharacters` to `20`.
+36. Select more than 20 characters and run `DevTrail: Explain Selection`.
+37. Confirm DevTrail warns that the selection is pretty large and uses the local explanation.
+38. Reset `devtrail.ai.maxSelectedCharacters` to `6000`.
+39. Set `devtrail.ai.speedMode` to `fast` and remove any explicit `devtrail.ai.model` override.
+40. Run `DevTrail: Explain Selection` and confirm the AI path still works. This mode uses `gpt-5-nano` for the fastest responses.
+41. Set `devtrail.ai.speedMode` back to `balanced`.
+42. Select text that looks like a secret, such as `OPENAI_API_KEY=abc123456789`.
+43. Run `DevTrail: Explain Selection`.
+44. Confirm DevTrail refuses to send it to AI and falls back locally immediately.
+45. Run `DevTrail: Clear OpenAI API Key`.
+46. Run `DevTrail: Disable AI Explanations`.
 
 ## Analyze A Project
 
