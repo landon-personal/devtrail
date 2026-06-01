@@ -13,7 +13,8 @@
       --panel: #ffffff;
       --border: #d9ded8;
       --accent: #176b52;
-      --accent-dark: #0f4e3c;
+      --accent-strong: #0f4e3c;
+      --warning: #7a4f00;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -24,7 +25,8 @@
         --panel: #1a211e;
         --border: #2f3a35;
         --accent: #64d2a2;
-        --accent-dark: #8be0ba;
+        --accent-strong: #8be0ba;
+        --warning: #ffd27a;
       }
     }
 
@@ -42,19 +44,24 @@
 
     main {
       margin: 0 auto;
-      max-width: 1040px;
+      max-width: 1080px;
       padding: 48px 20px;
     }
 
     h1 {
-      font-size: clamp(2.4rem, 6vw, 4.7rem);
+      font-size: clamp(2.5rem, 7vw, 5rem);
       line-height: 1;
       margin: 0 0 16px;
     }
 
     h2 {
       font-size: 1.35rem;
-      margin: 42px 0 14px;
+      margin: 44px 0 14px;
+    }
+
+    h3 {
+      font-size: 1rem;
+      margin: 0 0 8px;
     }
 
     p {
@@ -64,8 +71,16 @@
     }
 
     a {
-      color: var(--accent-dark);
+      color: var(--accent-strong);
       font-weight: 600;
+    }
+
+    code {
+      font-family: "SFMono-Regular", Consolas, monospace;
+    }
+
+    li {
+      margin-bottom: 8px;
     }
 
     .hero {
@@ -73,7 +88,7 @@
     }
 
     .kicker {
-      color: var(--accent-dark);
+      color: var(--accent-strong);
       font-weight: 700;
       letter-spacing: 0;
       margin-bottom: 10px;
@@ -82,7 +97,7 @@
 
     .summary {
       font-size: 1.2rem;
-      max-width: 720px;
+      max-width: 760px;
     }
 
     .actions {
@@ -109,57 +124,66 @@
     .grid {
       display: grid;
       gap: 12px;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
     }
 
-    .card {
+    .card,
+    .notice,
+    .screenshot {
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 6px;
       padding: 18px;
     }
 
-    .card h3 {
-      font-size: 1rem;
-      margin: 0 0 8px;
-    }
-
-    .card p {
+    .card p,
+    .screenshot p {
       font-size: 0.95rem;
       margin: 0;
     }
 
-    .notice {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 16px;
+    .notice.warning {
+      border-color: var(--warning);
     }
 
-    ol {
+    .steps {
       color: var(--muted);
       padding-left: 24px;
     }
 
-    li {
-      margin-bottom: 8px;
+    .screenshot {
+      min-height: 140px;
     }
 
-    code {
-      font-family: "SFMono-Regular", Consolas, monospace;
+    .placeholder {
+      border: 1px dashed var(--border);
+      border-radius: 6px;
+      color: var(--muted);
+      margin-top: 12px;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+      padding: 14px 0;
+    }
+
+    .faq-item:last-child {
+      border-bottom: 0;
     }
   </style>
 </head>
 <body>
   <main>
     <section class="hero">
-      <p class="kicker">DevTrail alpha</p>
+      <p class="kicker">DevTrail public alpha</p>
       <h1>Understand code as you learn.</h1>
-      <p class="summary">DevTrail is a local-first VS Code extension that explains selected code, terminal commands, and project setup in beginner-friendly language.</p>
+      <p class="summary">DevTrail is a beginner-friendly VS Code extension that explains selected code, terminal commands, and project setup in plain English.</p>
       <div class="actions">
         <a class="button primary" href="https://github.com/landon-personal/devtrail/releases/latest">Download latest alpha</a>
         <a class="button" href="https://github.com/landon-personal/devtrail">View GitHub repo</a>
-        <a class="button" href="https://github.com/landon-personal/devtrail/releases/download/v0.2.0-alpha.0/devtrail-0.2.0-alpha.0.vsix">Download .vsix</a>
+        <a class="button" href="https://github.com/landon-personal/devtrail/releases/download/v0.3.0-alpha.0/devtrail-0.3.0-alpha.0.vsix">Download .vsix</a>
       </div>
     </section>
 
@@ -172,7 +196,7 @@
         </div>
         <div class="card">
           <h3>Hover terms</h3>
-          <p>Hover common terms like const, map, useEffect, and props for quick explanations.</p>
+          <p>Hover terms like const, map, useEffect, props, and children for short explanations.</p>
         </div>
         <div class="card">
           <h3>Explain commands</h3>
@@ -183,39 +207,97 @@
           <p>Read package.json and see scripts, dependencies, tools, and suggested packs.</p>
         </div>
         <div class="card">
-          <h3>Adjust explanation level</h3>
-          <p>Choose Beginner, Learning, or Advanced depending on how much help you want.</p>
+          <h3>Install learning packs</h3>
+          <p>Enable bundled local packs for React, TypeScript, Tailwind, Vite, Git, npm, and more.</p>
         </div>
         <div class="card">
-          <h3>Install bundled packs</h3>
-          <p>Enable local packs for React, TypeScript, Tailwind, Vite, Git, npm, and more.</p>
+          <h3>Choose explanation depth</h3>
+          <p>Use Beginner, Learning, or Advanced depending on how much help you want.</p>
         </div>
       </div>
     </section>
 
     <section>
-      <h2>Privacy</h2>
-      <div class="notice">
-        <p>DevTrail is local-first. Local explanations, hover text, command explanations, project scans, and bundled pack recommendations run on your machine.</p>
-        <p>AI explanations are optional. Selected code is sent to OpenAI only if you enable AI, configure your own API key, and run Explain Selection on code that passes local safety checks.</p>
-        <p>No analytics. No tracking. No accounts. No external scripts on this page.</p>
+      <h2>Screenshots and demo</h2>
+      <p>These placeholders should be replaced before the repo is made public.</p>
+      <div class="grid">
+        <div class="screenshot">
+          <h3>Setup Guide</h3>
+          <p>Show the guided onboarding flow and explanation level choice.</p>
+          <div class="placeholder">Screenshot placeholder</div>
+        </div>
+        <div class="screenshot">
+          <h3>Explain Selection</h3>
+          <p>Show local explanation sections for a small React/JSX selection.</p>
+          <div class="placeholder">Screenshot placeholder</div>
+        </div>
+        <div class="screenshot">
+          <h3>Manage Packs</h3>
+          <p>Show installed status, suggested packs, and pack categories.</p>
+          <div class="placeholder">Screenshot placeholder</div>
+        </div>
       </div>
     </section>
 
     <section>
       <h2>Install the alpha</h2>
-      <ol>
+      <ol class="steps">
         <li>Download the latest DevTrail <code>.vsix</code> from GitHub Releases.</li>
         <li>Open VS Code.</li>
         <li>Run <code>Extensions: Install from VSIX...</code>.</li>
         <li>Select the downloaded file.</li>
+        <li>Reload VS Code if prompted.</li>
         <li>Run <code>DevTrail: Open Setup Guide</code>.</li>
       </ol>
     </section>
 
     <section>
+      <h2>Local-first privacy</h2>
+      <div class="notice">
+        <p>DevTrail is local-first. Local explanations, hover text, command explanations, project scans, pack recommendations, and bundled pack install state run on your machine.</p>
+        <p>No analytics. No telemetry. No tracking. No accounts. No cloud sync. No payments. No external scripts on this page.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Optional AI</h2>
+      <div class="notice">
+        <p>AI explanations are off by default. Selected code may be sent to OpenAI only if you enable AI, store your own API key in VS Code SecretStorage, and run Explain Selection on code that passes local safety checks.</p>
+        <p>If AI is disabled, missing a key, blocked by safety checks, canceled, or unavailable, DevTrail uses local explanations.</p>
+      </div>
+    </section>
+
+    <section>
       <h2>Alpha warning</h2>
-      <p>This is an early alpha. Some explanations will be incomplete or imperfect. Please report confusing explanations, missing terms, and unclear onboarding steps on GitHub.</p>
+      <div class="notice warning">
+        <p>This is an early alpha. Some explanations will be incomplete, too simple, or wrong. Use DevTrail as a learning helper, not as a source of guaranteed correctness.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>FAQ</h2>
+      <div class="faq-item">
+        <h3>Who is DevTrail for?</h3>
+        <p>Beginners learning JavaScript, TypeScript, React, Git, npm, and modern web project structure.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Does DevTrail send my code anywhere?</h3>
+        <p>Not by default. Local features stay on your machine. Optional AI sends selected code only after you enable AI and configure an API key.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Are packs downloaded from the internet?</h3>
+        <p>No. In this alpha, packs are bundled JSON/content files and are enabled locally in VS Code state.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Is this on the VS Code Marketplace?</h3>
+        <p>Not yet. The public alpha is installed from a local <code>.vsix</code> file.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Feedback</h2>
+      <p>Open a GitHub issue when the repo is public. Helpful feedback includes the DevTrail version, VS Code version, your operating system, the command you ran, installed packs, explanation level, and what felt confusing.</p>
+      <p>Do not paste API keys, .env values, private source code, school/private data, or secrets. Use a tiny fake code sample when possible.</p>
     </section>
   </main>
 </body>
