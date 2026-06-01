@@ -28,6 +28,10 @@
 - `npm run package`: passed.
 - Generated VSIX: `devtrail-0.4.0-beta.0.vsix`.
 - VSIX install: passed.
+- Public beta review docs added locally:
+  - `docs/PUBLIC_BETA_GO_NO_GO.md`
+  - `docs/TESTER_INVITE.md`
+  - `docs/MAKE_PUBLIC_STEPS.md`
 
 Installed with:
 
@@ -55,4 +59,11 @@ No blockers found during compile, parser test, package, or install.
 
 ## Public Actions
 
-No commit, push, GitHub release, GitHub Pages enablement, marketplace publish, or repo visibility change was performed during the v0.4 local prep pass.
+No commit, push, GitHub release, GitHub Pages enablement, marketplace publish, or repo visibility change was performed during the v0.4 local prep pass or the public beta review pass.
+
+Repo state confirmed during public beta review:
+
+- Repo: `landon-personal/devtrail`
+- Visibility: `PRIVATE`
+- Current prerelease: `v0.4.0-beta.0`
+- Attached asset: `devtrail-0.4.0-beta.0.vsix`

@@ -1,5 +1,7 @@
 # DevTrail v0.4 Public Beta Notes
 
+Note: this file keeps its original alpha-era filename for continuity, but the current guidance is for the v0.4 beta.
+
 ## What Beta Means
 
 DevTrail v0.4 beta is a tester-focused build for feedback before any wider public or Marketplace launch. It is useful enough to try, but explanations can still be incomplete or imperfect.
