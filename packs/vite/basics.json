@@ -1,0 +1,30 @@
+{
+  "id": "vite-basics",
+  "terms": [
+    {
+      "term": "npm run dev",
+      "plainEnglish": "Usually starts Vite's local development server so you can preview the app while editing.",
+      "confusion": "This server is for development. It is not the final production build."
+    },
+    {
+      "term": "npm run build",
+      "plainEnglish": "Usually asks Vite to create optimized files for deployment.",
+      "confusion": "Build output is normally written to a folder like dist and is separate from your source files."
+    },
+    {
+      "term": "localhost",
+      "plainEnglish": "A name for your own computer when a dev server runs locally.",
+      "confusion": "Other people cannot normally visit your localhost address from their computer."
+    },
+    {
+      "term": "hot reload",
+      "plainEnglish": "A development feature that updates the browser quickly after you save changes.",
+      "confusion": "Hot reload is a dev convenience. It is not something users rely on in production."
+    },
+    {
+      "term": "Vite",
+      "plainEnglish": "A fast frontend dev server and build tool.",
+      "confusion": "Vite is not React itself. It is the tool that runs and builds the app."
+    }
+  ]
+}

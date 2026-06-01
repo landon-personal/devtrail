@@ -1,0 +1,182 @@
+{
+  "packs": [
+    {
+      "id": "javascript-basics",
+      "displayName": "JavaScript Basics",
+      "description": "Beginner explanations for common JavaScript syntax and built-ins.",
+      "category": "language",
+      "localPath": "packs/javascript/builtins.json",
+      "relatedPackages": [
+        "package.json",
+        "javascript"
+      ],
+      "version": "0.1.0",
+      "status": "bundled",
+      "tags": [
+        "javascript",
+        "syntax",
+        "arrays"
+      ]
+    },
+    {
+      "id": "typescript-basics",
+      "displayName": "TypeScript Basics",
+      "description": "Beginner explanations for TypeScript types, compiler errors, and project setup.",
+      "category": "language",
+      "localPath": "packs/typescript/basics.json",
+      "relatedPackages": [
+        "typescript"
+      ],
+      "version": "0.1.0",
+      "status": "bundled",
+      "tags": [
+        "typescript",
+        "types",
+        "compiler"
+      ]
+    },
+    {
+      "id": "react-basics",
+      "displayName": "React Basics",
+      "description": "Beginner explanations for React components, props, state, and JSX.",
+      "category": "library",
+      "localPath": "packs/react/basics.json",
+      "relatedPackages": [
+        "react",
+        "react-dom",
+        "@types/react"
+      ],
+      "version": "0.1.0",
+      "status": "bundled",
+      "tags": [
+        "react",
+        "jsx",
+        "components"
+      ]
+    },
+    {
+      "id": "nextjs-basics",
+      "displayName": "Next.js Basics",
+      "description": "Beginner explanations for Next.js routing, pages, layouts, and full-stack app structure.",
+      "category": "framework",
+      "localPath": "packs/nextjs/basics.json",
+      "relatedPackages": [
+        "next"
+      ],
+      "version": "0.1.0",
+      "status": "bundled",
+      "tags": [
+        "nextjs",
+        "routing",
+        "react"
+      ]
+    },
+    {
+      "id": "vite-basics",
+      "displayName": "Vite Basics",
+      "description": "Beginner explanations for Vite development servers, builds, and frontend tooling.",
+      "category": "tool",
+      "localPath": "packs/vite/basics.json",
+      "relatedPackages": [
+        "vite",
+        "@vitejs/plugin-react"
+      ],
+      "version": "0.1.0",
+      "status": "bundled",
+      "tags": [
+        "vite",
+        "dev-server",
+        "build"
+      ]
+    },
+    {
+      "id": "tailwind-basics",
+      "displayName": "Tailwind Basics",
+      "description": "Beginner explanations for Tailwind utility classes and styling workflows.",
+      "category": "framework",
+      "localPath": "packs/tailwind/basics.json",
+      "relatedPackages": [
+        "tailwindcss",
+        "@tailwindcss/postcss",
+        "@tailwindcss/vite"
+      ],
+      "version": "0.1.0",
+      "status": "bundled",
+      "tags": [
+        "tailwind",
+        "css",
+        "styling"
+      ]
+    },
+    {
+      "id": "express-basics",
+      "displayName": "Express Basics",
+      "description": "Beginner explanations for Express routes, middleware, requests, and responses.",
+      "category": "framework",
+      "localPath": "packs/express/basics.json",
+      "relatedPackages": [
+        "express"
+      ],
+      "version": "0.1.0",
+      "status": "bundled",
+      "tags": [
+        "express",
+        "server",
+        "api"
+      ]
+    },
+    {
+      "id": "npm-commands",
+      "displayName": "npm Commands",
+      "description": "Beginner explanations for common npm install, run, and package script commands.",
+      "category": "tool",
+      "localPath": "packs/npm/commands.json",
+      "relatedPackages": [
+        "package.json",
+        "npm"
+      ],
+      "version": "0.1.0",
+      "status": "bundled",
+      "tags": [
+        "npm",
+        "commands",
+        "package-json"
+      ]
+    },
+    {
+      "id": "git-basics",
+      "displayName": "Git Basics",
+      "description": "Beginner explanations for common Git commands and version-control workflows.",
+      "category": "tool",
+      "localPath": "packs/git/commands.json",
+      "relatedPackages": [
+        "git"
+      ],
+      "version": "0.1.0",
+      "status": "bundled",
+      "tags": [
+        "git",
+        "commands",
+        "version-control"
+      ]
+    },
+    {
+      "id": "vscode-extension-basics",
+      "displayName": "VS Code Extension Basics",
+      "description": "Beginner explanations for VS Code extension commands, activation, and webviews.",
+      "category": "tool",
+      "localPath": "packs/vscode-extension/basics.json",
+      "relatedPackages": [
+        "vscode",
+        "@types/vscode"
+      ],
+      "version": "0.1.0",
+      "status": "bundled",
+      "tags": [
+        "vscode",
+        "extensions",
+        "webviews"
+      ]
+    }
+  ]
+}

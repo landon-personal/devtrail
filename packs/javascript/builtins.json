@@ -1,0 +1,50 @@
+{
+  "language": "javascript",
+  "terms": [
+    {
+      "term": "const",
+      "plainEnglish": "Creates a variable name that cannot be reassigned to a different value.",
+      "confusion": "The value can still be mutable. For example, a const array can still have items pushed into it."
+    },
+    {
+      "term": "let",
+      "plainEnglish": "Creates a variable whose value can be reassigned later.",
+      "confusion": "Use let when the value really needs to change; otherwise const is usually clearer."
+    },
+    {
+      "term": "function",
+      "plainEnglish": "Defines a reusable block of code that can be called by name.",
+      "confusion": "Defining a function does not run it. The function runs only when it is called."
+    },
+    {
+      "term": "async",
+      "plainEnglish": "Marks a function as asynchronous, so it returns a Promise.",
+      "confusion": "Async does not make code run on a separate thread. It helps work with operations that finish later."
+    },
+    {
+      "term": "await",
+      "plainEnglish": "Pauses an async function until a Promise settles, then gives back the result.",
+      "confusion": "Await can only be used in async functions or in modules that support top-level await."
+    },
+    {
+      "term": "map",
+      "plainEnglish": "Creates a new array by transforming each item in an existing array.",
+      "confusion": "Map is for changing each item into a new value, not for filtering items out."
+    },
+    {
+      "term": "filter",
+      "plainEnglish": "Creates a new array containing only the items that pass a true-or-false test.",
+      "confusion": "Filter keeps or removes whole items. It does not transform the kept items."
+    },
+    {
+      "term": "reduce",
+      "plainEnglish": "Combines array items into one result, such as a total, object, or grouped value.",
+      "confusion": "Reduce can be powerful but hard to read. For beginners, a loop is sometimes clearer."
+    },
+    {
+      "term": "fetch",
+      "plainEnglish": "Starts a network request and returns a Promise for the response.",
+      "confusion": "Fetch does not directly return the final data. You usually need to call response.json() or response.text()."
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "id": "typescript-basics",
+  "terms": [
+    {
+      "term": "type",
+      "plainEnglish": "Creates a TypeScript name for the shape of a value.",
+      "confusion": "A type helps the editor and compiler. It does not exist as a real value at runtime."
+    },
+    {
+      "term": "interface",
+      "plainEnglish": "Describes the shape an object should have, including property names and value types.",
+      "confusion": "Interfaces describe structure. They do not create objects by themselves."
+    },
+    {
+      "term": "string",
+      "plainEnglish": "A TypeScript type for text values.",
+      "confusion": "Use string for text, not String with a capital S in normal type annotations."
+    },
+    {
+      "term": "number",
+      "plainEnglish": "A TypeScript type for numeric values.",
+      "confusion": "TypeScript uses number for integers and decimals."
+    },
+    {
+      "term": "boolean",
+      "plainEnglish": "A TypeScript type for true-or-false values.",
+      "confusion": "Boolean values are true or false, not the text strings \"true\" or \"false\"."
+    },
+    {
+      "term": "optional",
+      "plainEnglish": "A property marked with ? can be missing or undefined.",
+      "confusion": "Optional does not mean any value is allowed. The value still has the type you wrote."
+    }
+  ]
+}

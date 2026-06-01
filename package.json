@@ -1,0 +1,200 @@
+{
+  "name": "devtrail",
+  "displayName": "DevTrail",
+  "description": "A local-first learning companion that explains code, terminal commands, and project setup for beginners.",
+  "version": "0.1.0-alpha.0",
+  "publisher": "devtrail",
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/landonkruse33/devtrail.git"
+  },
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Education",
+    "Other"
+  ],
+  "keywords": [
+    "beginner",
+    "learning",
+    "javascript",
+    "typescript",
+    "local-first"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:devtrail.explainSelection",
+    "onCommand:devtrail.explainCommand",
+    "onCommand:devtrail.analyzeProject",
+    "onCommand:devtrail.refreshProjectScan",
+    "onCommand:devtrail.showLanguageMode",
+    "onCommand:devtrail.changeExplanationLevel",
+    "onCommand:devtrail.enableAI",
+    "onCommand:devtrail.disableAI",
+    "onCommand:devtrail.setOpenAIApiKey",
+    "onCommand:devtrail.clearOpenAIApiKey",
+    "onCommand:devtrail.managePacks",
+    "onCommand:devtrail.installSuggestedPacks",
+    "onCommand:devtrail.resetInstalledPacks",
+    "onCommand:devtrail.openSetupGuide",
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "devtrail.explainSelection",
+        "title": "DevTrail: Explain Selection",
+        "category": "DevTrail"
+      },
+      {
+        "command": "devtrail.explainCommand",
+        "title": "DevTrail: Explain Command",
+        "category": "DevTrail"
+      },
+      {
+        "command": "devtrail.analyzeProject",
+        "title": "DevTrail: Analyze Project",
+        "category": "DevTrail"
+      },
+      {
+        "command": "devtrail.refreshProjectScan",
+        "title": "DevTrail: Refresh Project Scan",
+        "category": "DevTrail"
+      },
+      {
+        "command": "devtrail.showLanguageMode",
+        "title": "DevTrail: Show Current Language Mode",
+        "category": "DevTrail"
+      },
+      {
+        "command": "devtrail.changeExplanationLevel",
+        "title": "DevTrail: Change Explanation Level",
+        "category": "DevTrail"
+      },
+      {
+        "command": "devtrail.enableAI",
+        "title": "DevTrail: Enable AI Explanations",
+        "category": "DevTrail"
+      },
+      {
+        "command": "devtrail.disableAI",
+        "title": "DevTrail: Disable AI Explanations",
+        "category": "DevTrail"
+      },
+      {
+        "command": "devtrail.setOpenAIApiKey",
+        "title": "DevTrail: Set OpenAI API Key",
+        "category": "DevTrail"
+      },
+      {
+        "command": "devtrail.clearOpenAIApiKey",
+        "title": "DevTrail: Clear OpenAI API Key",
+        "category": "DevTrail"
+      },
+      {
+        "command": "devtrail.managePacks",
+        "title": "DevTrail: Manage Packs",
+        "category": "DevTrail"
+      },
+      {
+        "command": "devtrail.installSuggestedPacks",
+        "title": "DevTrail: Install Suggested Packs",
+        "category": "DevTrail"
+      },
+      {
+        "command": "devtrail.resetInstalledPacks",
+        "title": "DevTrail: Reset Installed Packs",
+        "category": "DevTrail"
+      },
+      {
+        "command": "devtrail.openSetupGuide",
+        "title": "DevTrail: Open Setup Guide",
+        "category": "DevTrail"
+      }
+    ],
+    "configuration": {
+      "title": "DevTrail",
+      "properties": {
+        "devtrail.hovers.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show short DevTrail beginner explanations when hovering over known JavaScript and TypeScript terms."
+        },
+        "devtrail.explanationLevel": {
+          "type": "string",
+          "enum": [
+            "beginner",
+            "learning",
+            "advanced"
+          ],
+          "default": "beginner",
+          "enumDescriptions": [
+            "Very simple explanations, minimal jargon, and basic concepts explained.",
+            "Normal helpful explanations with some technical terms explained.",
+            "Concise explanations with more accurate technical detail and less hand-holding."
+          ],
+          "description": "Controls how simple or technical DevTrail explanations should be."
+        },
+        "devtrail.ai.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable optional AI-powered explanations for selected code. Local explanations are used when this is false."
+        },
+        "devtrail.ai.model": {
+          "type": "string",
+          "default": "gpt-5-mini",
+          "description": "OpenAI model used for optional AI-powered explanations. gpt-5-mini is the recommended default for quality and speed."
+        },
+        "devtrail.ai.includeProjectContext": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include limited project context, such as language mode and detected tools, in optional AI explanation requests."
+        },
+        "devtrail.ai.timeoutMs": {
+          "type": "number",
+          "default": 8000,
+          "minimum": 1000,
+          "maximum": 60000,
+          "description": "How long DevTrail waits for an optional AI explanation before falling back to a local explanation."
+        },
+        "devtrail.ai.maxSelectedCharacters": {
+          "type": "number",
+          "default": 6000,
+          "minimum": 500,
+          "maximum": 50000,
+          "description": "Maximum selected character count DevTrail will send for optional AI explanations."
+        },
+        "devtrail.ai.speedMode": {
+          "type": "string",
+          "enum": [
+            "balanced",
+            "fast"
+          ],
+          "default": "balanced",
+          "description": "Choose balanced for the configured model, or fast to use gpt-5-nano unless you explicitly set devtrail.ai.model."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "package": "vsce package",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.8",
+    "@types/vscode": "^1.90.0",
+    "@vscode/vsce": "^3.6.3",
+    "typescript": "^5.5.2"
+  },
+  "dependencies": {
+    "openai": "^6.39.1"
+  }
+}

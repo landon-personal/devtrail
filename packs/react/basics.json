@@ -1,0 +1,45 @@
+{
+  "id": "react-basics",
+  "terms": [
+    {
+      "term": "useState",
+      "plainEnglish": "A React hook that stores a value and gives you a setter function to update it.",
+      "confusion": "Changing state with the setter asks React to render again. Changing the value directly will not."
+    },
+    {
+      "term": "useEffect",
+      "plainEnglish": "A React hook for running code after the component renders, often for loading data or syncing with something outside React.",
+      "confusion": "An effect can run more than once. The dependency array controls when it runs again."
+    },
+    {
+      "term": "props",
+      "plainEnglish": "Values passed into a component from the place where that component is used.",
+      "confusion": "Props are read-only inside the child component. The parent owns the value."
+    },
+    {
+      "term": "component",
+      "plainEnglish": "A reusable piece of UI, usually written as a function that returns JSX.",
+      "confusion": "Component names should start with a capital letter so React treats them as components."
+    },
+    {
+      "term": "JSX",
+      "plainEnglish": "A JavaScript syntax that looks like HTML and describes what React should render.",
+      "confusion": "JSX is not a plain string. It gets compiled into JavaScript before the browser runs it."
+    },
+    {
+      "term": "children",
+      "plainEnglish": "The content placed between a component's opening and closing tags.",
+      "confusion": "Children are passed through props, even though they look nested in JSX."
+    },
+    {
+      "term": "Navigate",
+      "plainEnglish": "A React Router component that sends the user to another route.",
+      "confusion": "Rendering Navigate changes the current route. It is not just a visual link."
+    },
+    {
+      "term": "Route",
+      "plainEnglish": "A React Router entry that connects a URL path to the component that should show there.",
+      "confusion": "Route needs to be inside the router setup to work."
+    }
+  ]
+}

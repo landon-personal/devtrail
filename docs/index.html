@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevTrail Alpha</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f7f7f5;
+      --fg: #1f2933;
+      --muted: #596572;
+      --panel: #ffffff;
+      --border: #d9ded8;
+      --accent: #176b52;
+      --accent-dark: #0f4e3c;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #111513;
+        --fg: #edf2ee;
+        --muted: #b7c0ba;
+        --panel: #1a211e;
+        --border: #2f3a35;
+        --accent: #64d2a2;
+        --accent-dark: #8be0ba;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    main {
+      margin: 0 auto;
+      max-width: 1040px;
+      padding: 48px 20px;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 6vw, 4.7rem);
+      line-height: 1;
+      margin: 0 0 16px;
+    }
+
+    h2 {
+      font-size: 1.35rem;
+      margin: 42px 0 14px;
+    }
+
+    p {
+      color: var(--muted);
+      font-size: 1rem;
+      margin: 0 0 16px;
+    }
+
+    a {
+      color: var(--accent-dark);
+      font-weight: 600;
+    }
+
+    .hero {
+      padding: 42px 0 28px;
+    }
+
+    .kicker {
+      color: var(--accent-dark);
+      font-weight: 700;
+      letter-spacing: 0;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .summary {
+      font-size: 1.2rem;
+      max-width: 720px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 26px;
+    }
+
+    .button {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      display: inline-flex;
+      padding: 10px 14px;
+      text-decoration: none;
+    }
+
+    .button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+    }
+
+    .grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 18px;
+    }
+
+    .card h3 {
+      font-size: 1rem;
+      margin: 0 0 8px;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .notice {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px;
+    }
+
+    ol {
+      color: var(--muted);
+      padding-left: 24px;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    code {
+      font-family: "SFMono-Regular", Consolas, monospace;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <p class="kicker">DevTrail alpha</p>
+      <h1>Understand code as you learn.</h1>
+      <p class="summary">DevTrail is a local-first VS Code extension that explains selected code, terminal commands, and project setup in beginner-friendly language.</p>
+      <div class="actions">
+        <a class="button primary" href="https://github.com/landonkruse33/devtrail/releases/latest">Download latest alpha</a>
+        <a class="button" href="https://github.com/landonkruse33/devtrail">View GitHub repo</a>
+        <a class="button" href="https://github.com/landonkruse33/devtrail/releases/download/v0.1.0-alpha.0/devtrail-0.1.0-alpha.0.vsix">Download .vsix</a>
+      </div>
+    </section>
+
+    <section>
+      <h2>What DevTrail does</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Explain selected code</h3>
+          <p>Highlight JavaScript, TypeScript, React, or JSX and get a plain-English breakdown.</p>
+        </div>
+        <div class="card">
+          <h3>Hover terms</h3>
+          <p>Hover common terms like const, map, useEffect, and props for quick explanations.</p>
+        </div>
+        <div class="card">
+          <h3>Explain commands</h3>
+          <p>Understand beginner Git and npm commands before you run them.</p>
+        </div>
+        <div class="card">
+          <h3>Analyze projects</h3>
+          <p>Read package.json and see scripts, dependencies, tools, and suggested packs.</p>
+        </div>
+        <div class="card">
+          <h3>Adjust explanation level</h3>
+          <p>Choose Beginner, Learning, or Advanced depending on how much help you want.</p>
+        </div>
+        <div class="card">
+          <h3>Install bundled packs</h3>
+          <p>Enable local packs for React, TypeScript, Tailwind, Vite, Git, npm, and more.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Privacy</h2>
+      <div class="notice">
+        <p>DevTrail is local-first. Local explanations, hover text, command explanations, project scans, and bundled pack recommendations run on your machine.</p>
+        <p>AI explanations are optional. Selected code is sent to OpenAI only if you enable AI, configure your own API key, and run Explain Selection on code that passes local safety checks.</p>
+        <p>No analytics. No tracking. No accounts. No external scripts on this page.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Install the alpha</h2>
+      <ol>
+        <li>Download the latest DevTrail <code>.vsix</code> from GitHub Releases.</li>
+        <li>Open VS Code.</li>
+        <li>Run <code>Extensions: Install from VSIX...</code>.</li>
+        <li>Select the downloaded file.</li>
+        <li>Run <code>DevTrail: Open Setup Guide</code>.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Alpha warning</h2>
+      <p>This is an early alpha. Some explanations will be incomplete or imperfect. Please report confusing explanations, missing terms, and unclear onboarding steps on GitHub.</p>
+    </section>
+  </main>
+</body>
+</html>

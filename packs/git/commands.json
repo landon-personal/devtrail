@@ -1,0 +1,148 @@
+{
+  "tool": "git",
+  "terms": [
+    {
+      "term": "git status",
+      "plainEnglish": "Shows what changed and what Git is ready to commit.",
+      "confusion": "It only reports information. It does not change files."
+    },
+    {
+      "term": "git add .",
+      "plainEnglish": "Stages changed files in the current folder for the next commit.",
+      "confusion": "It can stage more than you intended, so check git status first."
+    },
+    {
+      "term": "git commit -m",
+      "plainEnglish": "Saves staged changes into Git history with a short message.",
+      "confusion": "It only commits staged changes, not every edited file automatically."
+    },
+    {
+      "term": "git push",
+      "plainEnglish": "Uploads your local commits to the connected remote repository.",
+      "confusion": "Push sends commits, not unsaved file changes."
+    },
+    {
+      "term": "git pull",
+      "plainEnglish": "Downloads remote commits and applies them to your current branch.",
+      "confusion": "Pulling with local edits can create conflicts."
+    }
+  ],
+  "commands": [
+    {
+      "command": "git status",
+      "whatItDoes": "Shows which files have changed and what Git is ready to save.",
+      "parts": [
+        {
+          "part": "git",
+          "explanation": "Runs the Git version-control tool."
+        },
+        {
+          "part": "status",
+          "explanation": "Asks Git for the current state of your working folder."
+        }
+      ],
+      "whenToUse": "Use this before committing so you know what changed.",
+      "commonMistake": "Beginners sometimes think status changes files. It only reports information."
+    },
+    {
+      "command": "git add .",
+      "whatItDoes": "Stages all changed files in the current folder so they can be included in the next commit.",
+      "parts": [
+        {
+          "part": "git",
+          "explanation": "Runs the Git version-control tool."
+        },
+        {
+          "part": "add",
+          "explanation": "Tells Git to stage changes."
+        },
+        {
+          "part": ".",
+          "explanation": "Means the current folder and everything inside it."
+        }
+      ],
+      "whenToUse": "Use this when you want the next commit to include all current changes.",
+      "commonMistake": "Running git add . can stage more files than you intended. Check git status first."
+    },
+    {
+      "command": "git commit -m \"message\"",
+      "whatItDoes": "Saves the staged changes into Git history with a short message.",
+      "parts": [
+        {
+          "part": "git",
+          "explanation": "Runs the Git version-control tool."
+        },
+        {
+          "part": "commit",
+          "explanation": "Creates a saved snapshot from the staged changes."
+        },
+        {
+          "part": "-m",
+          "explanation": "Lets you write the commit message directly in the command."
+        },
+        {
+          "part": "\"message\"",
+          "explanation": "A short note explaining what changed."
+        }
+      ],
+      "whenToUse": "Use this after git add when you are ready to save a meaningful checkpoint.",
+      "commonMistake": "If nothing is staged, Git will not create the commit. Run git status to check."
+    },
+    {
+      "command": "git push",
+      "whatItDoes": "Uploads your local commits to the connected remote repository.",
+      "parts": [
+        {
+          "part": "git",
+          "explanation": "Runs the Git version-control tool."
+        },
+        {
+          "part": "push",
+          "explanation": "Sends your commits from your computer to the remote."
+        }
+      ],
+      "whenToUse": "Use this after committing when you want your work available on GitHub or another remote.",
+      "commonMistake": "Push only uploads commits. Unsaved or unstaged file changes will not be pushed."
+    },
+    {
+      "command": "git pull",
+      "whatItDoes": "Downloads new commits from the remote repository and applies them to your current branch.",
+      "parts": [
+        {
+          "part": "git",
+          "explanation": "Runs the Git version-control tool."
+        },
+        {
+          "part": "pull",
+          "explanation": "Gets remote changes and merges them into your branch."
+        }
+      ],
+      "whenToUse": "Use this when you want to bring your local branch up to date.",
+      "commonMistake": "Pulling with uncommitted local changes can cause conflicts. Check git status first."
+    },
+    {
+      "command": "git checkout -b branch-name",
+      "whatItDoes": "Creates a new branch and switches you to it.",
+      "parts": [
+        {
+          "part": "git",
+          "explanation": "Runs the Git version-control tool."
+        },
+        {
+          "part": "checkout",
+          "explanation": "Switches which branch you are working on."
+        },
+        {
+          "part": "-b",
+          "explanation": "Creates a new branch before switching to it."
+        },
+        {
+          "part": "branch-name",
+          "explanation": "The name you choose for the new branch."
+        }
+      ],
+      "whenToUse": "Use this before starting new work so your changes stay separate from the main branch.",
+      "commonMistake": "The branch name should not include spaces. Use hyphens, like add-login-page."
+    }
+  ]
+}

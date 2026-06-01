@@ -1,0 +1,93 @@
+{
+  "tool": "npm",
+  "terms": [
+    {
+      "term": "npm install",
+      "plainEnglish": "Installs packages listed in package.json so the project can run.",
+      "confusion": "It may update lockfiles. That is normal for package installs."
+    },
+    {
+      "term": "npm run dev",
+      "plainEnglish": "Runs the project's development script from package.json.",
+      "confusion": "The script must exist in package.json or npm will report a missing script."
+    },
+    {
+      "term": "npm run build",
+      "plainEnglish": "Runs the project's build script, usually to create production-ready output.",
+      "confusion": "Building does not usually start the app for local editing."
+    },
+    {
+      "term": "package.json",
+      "plainEnglish": "The main file that lists project scripts, dependencies, and package metadata.",
+      "confusion": "Editing package.json manually can be useful, but invalid JSON will break npm commands."
+    },
+    {
+      "term": "dependencies",
+      "plainEnglish": "Packages the app usually needs when it runs.",
+      "confusion": "Dependencies are different from devDependencies, which are mostly tools used while building."
+    },
+    {
+      "term": "devDependencies",
+      "plainEnglish": "Packages mostly used during development, checking, or building.",
+      "confusion": "A package can work from either section, but the distinction helps describe why it is installed."
+    }
+  ],
+  "commands": [
+    {
+      "command": "npm install",
+      "whatItDoes": "Installs the packages listed in package.json so the project can run.",
+      "parts": [
+        {
+          "part": "npm",
+          "explanation": "Runs the Node package manager."
+        },
+        {
+          "part": "install",
+          "explanation": "Downloads and installs the project's dependencies."
+        }
+      ],
+      "whenToUse": "Use this after cloning a Node project or when package.json changes.",
+      "commonMistake": "Do not edit node_modules by hand. Change package.json and run npm install instead."
+    },
+    {
+      "command": "npm run compile",
+      "whatItDoes": "Runs the project's compile script from package.json.",
+      "parts": [
+        {
+          "part": "npm",
+          "explanation": "Runs the Node package manager."
+        },
+        {
+          "part": "run",
+          "explanation": "Runs a named script from package.json."
+        },
+        {
+          "part": "compile",
+          "explanation": "The script name. In this project, it compiles TypeScript."
+        }
+      ],
+      "whenToUse": "Use this when you want to check that TypeScript builds successfully.",
+      "commonMistake": "The script must exist in package.json. If it does not, npm will report a missing script."
+    },
+    {
+      "command": "npm run dev",
+      "whatItDoes": "Runs the project's development script from package.json, usually starting a local dev server or watcher.",
+      "parts": [
+        {
+          "part": "npm",
+          "explanation": "Runs the Node package manager."
+        },
+        {
+          "part": "run",
+          "explanation": "Runs a named script from package.json."
+        },
+        {
+          "part": "dev",
+          "explanation": "The script name, commonly used for development mode."
+        }
+      ],
+      "whenToUse": "Use this while building an app when the project provides a dev script.",
+      "commonMistake": "Not every project has npm run dev. Check package.json if the command fails."
+    }
+  ]
+}

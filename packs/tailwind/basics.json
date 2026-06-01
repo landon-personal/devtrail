@@ -1,0 +1,35 @@
+{
+  "id": "tailwind-basics",
+  "terms": [
+    {
+      "term": "className",
+      "plainEnglish": "The JSX attribute where React components usually put CSS class names.",
+      "confusion": "In JSX, use className instead of the HTML attribute class."
+    },
+    {
+      "term": "flex",
+      "plainEnglish": "A Tailwind utility that turns an element into a flexbox layout container.",
+      "confusion": "Flex affects how the element's children are arranged, not the element's own text style."
+    },
+    {
+      "term": "grid",
+      "plainEnglish": "A Tailwind utility that turns an element into a CSS grid layout container.",
+      "confusion": "Grid usually needs column or row utilities to describe the layout."
+    },
+    {
+      "term": "p-4",
+      "plainEnglish": "A Tailwind spacing utility that adds padding on all sides.",
+      "confusion": "The number is from Tailwind's spacing scale, not always direct pixels."
+    },
+    {
+      "term": "text-sm",
+      "plainEnglish": "A Tailwind utility that makes text use a small font size.",
+      "confusion": "Text utilities can control size, color, alignment, and more, so read the full class name."
+    },
+    {
+      "term": "rounded",
+      "plainEnglish": "A Tailwind utility that adds rounded corners.",
+      "confusion": "Rounded changes the border radius. It does not add a visible border by itself."
+    }
+  ]
+}
