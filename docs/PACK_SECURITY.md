@@ -1,6 +1,6 @@
 # DevTrail Pack Security
 
-DevTrail v1 release-candidate packs are bundled with the extension and loaded from local JSON/content files. There is no internet pack download flow yet.
+DevTrail v1.0 packs are bundled with the extension and loaded from local JSON/content files. There is no internet pack download flow yet.
 
 ## Current Rules
 

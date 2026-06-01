@@ -1,6 +1,6 @@
 # DevTrail Manual QA
 
-Use this checklist before a `v1.0.0-rc.0` build.
+Use this checklist before a `v1.0.0` build.
 
 ## Setup Guide
 

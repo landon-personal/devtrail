@@ -2,7 +2,7 @@
   "name": "devtrail",
   "displayName": "DevTrail",
   "description": "A local-first learning companion that explains code, terminal commands, and project setup for beginners.",
-  "version": "1.0.0-rc.0",
+  "version": "1.0.0",
   "publisher": "devtrail",
   "license": "MIT",
   "private": true,

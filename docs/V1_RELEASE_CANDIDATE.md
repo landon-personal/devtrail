@@ -1,8 +1,8 @@
-# DevTrail v1 Release Candidate
+# DevTrail v1 Release Candidate Archive
 
-`v1.0.0-rc.0` is the release candidate for DevTrail v1.
+`v1.0.0-rc.0` was the release candidate for DevTrail v1. This file is kept as an archive of the release-candidate rules that were used before `v1.0.0`.
 
-This means DevTrail is in feature freeze. Do not add major new features before v1.0.0 unless a serious bug appears.
+For `v1.0.0`, keep changes focused on stabilization, docs accuracy, install flow, and privacy unless a serious bug appears.
 
 ## Focus Before v1
 

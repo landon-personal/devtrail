@@ -1,6 +1,6 @@
 # DevTrail Tester Feedback Guide
 
-Use this guide when asking release-candidate testers to try DevTrail.
+Use this guide when asking testers to try DevTrail.
 
 ## Who Should Test DevTrail
 

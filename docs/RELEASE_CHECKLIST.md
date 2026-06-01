@@ -1,6 +1,6 @@
 # DevTrail Release Checklist
 
-Use this before creating a GitHub prerelease. Do not publish to the VS Code Marketplace from this checklist.
+Use this before creating a GitHub release. Do not publish to the VS Code Marketplace from this checklist.
 
 ## Local Build
 
@@ -68,12 +68,12 @@ Use this before creating a GitHub prerelease. Do not publish to the VS Code Mark
 - Do not commit API keys, `.env` values, private source code, school/private data, or secrets.
 - Confirm `.github/**`, `docs/**`, and `*.vsix` are not packaged into the VSIX unless intentionally changed.
 
-## GitHub Prerelease
+## GitHub Release
 
 - Commit release prep changes.
 - Push `main`.
-- Create the GitHub prerelease with the VSIX attached.
-- Confirm the release is marked prerelease.
+- Create the GitHub release with the VSIX attached.
+- Confirm the release title, tag, notes, and asset are correct.
 - Download the VSIX from the release page.
 - Install the downloaded VSIX in VS Code.
 - Run `DevTrail: Open Setup Guide` from the downloaded install.

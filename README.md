@@ -12,9 +12,9 @@ It is built for people learning JavaScript, TypeScript, React, Git, npm, and mod
 - Instructors, tutors, and mentors helping people read code
 - Developers who want local, short explanations inside VS Code
 
-## Current Release Candidate Features
+## Current v1.0 Features
 
-- First-install setup guide auto-launch so new testers see what to do right away.
+- First-install setup guide auto-launch so new users see what to do right away.
 - `DevTrail: Quick Start`: one menu for common actions from the Command Palette or status bar.
 - `DevTrail: Open Setup Guide`: guided onboarding for experience level, project scan, suggested packs, and first steps.
 - `DevTrail: Explain Selection`: explains selected JavaScript, TypeScript, React, or JSX code.
@@ -30,7 +30,7 @@ It is built for people learning JavaScript, TypeScript, React, Git, npm, and mod
 
 ## Install From VSIX
 
-DevTrail is not on the VS Code Marketplace yet. Release candidate testers install it from a `.vsix` file.
+DevTrail is not on the VS Code Marketplace yet. Users install it from a `.vsix` file for now.
 
 1. Download the latest DevTrail `.vsix` from GitHub Releases.
 2. Open VS Code.
@@ -43,7 +43,7 @@ DevTrail is not on the VS Code Marketplace yet. Release candidate testers instal
 Command-line install:
 
 ```sh
-code --install-extension devtrail-1.0.0-rc.0.vsix
+code --install-extension devtrail-1.0.0.vsix
 ```
 
 ## First Run
@@ -146,7 +146,7 @@ DevTrail does not include telemetry, analytics, accounts, cloud sync, payments, 
 
 ## Bundled Packs
 
-Packs teach DevTrail about languages, tools, and libraries. In this release candidate, packs are bundled with the extension and installed into local VS Code extension state.
+Packs teach DevTrail about languages, tools, and libraries. In v1.0, packs are bundled with the extension and installed into local VS Code extension state.
 
 Current bundled packs:
 
@@ -194,7 +194,7 @@ Run in VS Code:
 
 ## Current Limitations
 
-- This is a release candidate. Expect mostly stabilization work before v1.0.0.
+- This is the first stable DevTrail release. Some explanations can still be incomplete or imperfect.
 - Local code explanations are pattern-based, not full program analysis.
 - React/JSX local explanations cover common patterns, not every valid React structure.
 - Pack installation only enables bundled JSON/content packs.
@@ -233,4 +233,4 @@ Useful reports include:
 
 Do not include API keys, `.env` values, private source code, school/private data, access tokens, passwords, or other secrets. Use a tiny fake code example whenever possible.
 
-See [docs/TESTER_FEEDBACK.md](docs/TESTER_FEEDBACK.md) for safe release-candidate feedback guidance.
+See [docs/TESTER_FEEDBACK.md](docs/TESTER_FEEDBACK.md) for safe feedback guidance.

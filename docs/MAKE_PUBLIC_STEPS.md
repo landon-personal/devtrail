@@ -1,6 +1,6 @@
 # DevTrail Public Release Steps
 
-The repo is already public. Use these steps when updating a public release candidate or final release.
+The repo is already public. Use these steps when updating a public release.
 
 ## Before You Start
 
@@ -13,7 +13,7 @@ git status --short
 ```
 
 4. Make sure no `.vsix`, `node_modules`, `out`, `.env`, or private files are staged.
-5. Confirm the latest intended release is `v1.0.0-rc.0`.
+5. Confirm the latest intended release is `v1.0.0`.
 
 ## Confirm The Repo Is Public
 
@@ -29,21 +29,21 @@ git status --short
 1. Open:
 
 ```text
-https://github.com/landon-personal/devtrail/releases/tag/v1.0.0-rc.0
+https://github.com/landon-personal/devtrail/releases/tag/v1.0.0
 ```
 
-2. Click `devtrail-1.0.0-rc.0.vsix`.
+2. Click `devtrail-1.0.0.vsix`.
 3. Confirm the file downloads.
 4. Install it in VS Code:
 
 ```bash
-code --install-extension ~/Downloads/devtrail-1.0.0-rc.0.vsix --force
+code --install-extension ~/Downloads/devtrail-1.0.0.vsix --force
 ```
 
 5. Open VS Code.
 6. Confirm setup opens automatically. You can also run `DevTrail: Open Setup Guide`.
 
-If the download fails or shows a 404, stop and do not share the release-candidate link yet.
+If the download fails or shows a 404, stop and do not share the release link yet.
 
 ## Enable GitHub Pages If Desired
 
@@ -69,7 +69,7 @@ If the page has broken links, stop and fix them before sharing.
 3. Add the release link:
 
 ```text
-https://github.com/landon-personal/devtrail/releases/tag/v1.0.0-rc.0
+https://github.com/landon-personal/devtrail/releases/tag/v1.0.0
 ```
 
 4. Send it to 3-5 trusted testers.

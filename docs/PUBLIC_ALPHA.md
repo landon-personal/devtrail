@@ -1,10 +1,10 @@
-# DevTrail v1.0 Release Candidate Notes
+# DevTrail v1.0 Public Notes
 
-Note: this file keeps its original alpha-era filename for continuity, but the current guidance is for `v1.0.0-rc.0`.
+Note: this file keeps its original alpha-era filename for continuity, but the current guidance is for `v1.0.0`.
 
-## What Release Candidate Means
+## What v1.0 Means
 
-DevTrail `v1.0.0-rc.0` is the final candidate for v1 testing before a stable `v1.0.0`. It is useful enough to try, but explanations can still be incomplete or imperfect.
+DevTrail `v1.0.0` is the first stable release. It is useful enough to share with learners, but explanations can still be incomplete or imperfect.
 
 Expect:
 
@@ -18,11 +18,11 @@ Expect:
 - manual `.vsix` installation
 - no remote pack downloads
 
-Do not add major new features before v1 unless a serious bug appears. Focus feedback on reliability, wording, docs, install flow, and privacy.
+After v1.0, keep feedback focused on reliability, wording, docs, install flow, privacy, and the explanation quality beginners actually see.
 
 ## Recommended Testers
 
-Good release-candidate testers include:
+Good testers include:
 
 - beginner JavaScript and React learners
 - bootcamp students
