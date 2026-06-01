@@ -1,14 +1,16 @@
-# DevTrail v0.4 Public Beta Notes
+# DevTrail v0.5 Public Beta Notes
 
-Note: this file keeps its original alpha-era filename for continuity, but the current guidance is for the v0.4 beta.
+Note: this file keeps its original alpha-era filename for continuity, but the current guidance is for the v0.5 beta.
 
 ## What Beta Means
 
-DevTrail v0.4 beta is a tester-focused build for feedback before any wider public or Marketplace launch. It is useful enough to try, but explanations can still be incomplete or imperfect.
+DevTrail v0.5 beta is a tester-focused build for feedback before any wider public or Marketplace launch. It is useful enough to try, but explanations can still be incomplete or imperfect.
 
 Expect:
 
 - improved local explanations for common JavaScript and React/JSX patterns
+- setup that opens automatically on first install
+- keyboard shortcuts, right-click actions, status bar quick actions, and `DevTrail: Quick Start`
 - friendlier fallback and error handling
 - customizable Beginner, Learning, and Advanced explanation levels
 - rough edges in real-world code

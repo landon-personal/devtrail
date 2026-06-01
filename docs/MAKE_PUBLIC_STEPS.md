@@ -13,7 +13,7 @@ git status --short
 ```
 
 4. Make sure no `.vsix`, `node_modules`, `out`, `.env`, or private files are staged.
-5. Confirm the latest release is `v0.4.0-beta.0`.
+5. Confirm the latest release is `v0.5.0-beta.0`.
 
 ## Make The Repo Public
 
@@ -32,19 +32,19 @@ git status --short
 1. Open:
 
 ```text
-https://github.com/landon-personal/devtrail/releases/tag/v0.4.0-beta.0
+https://github.com/landon-personal/devtrail/releases/tag/v0.5.0-beta.0
 ```
 
-2. Click `devtrail-0.4.0-beta.0.vsix`.
+2. Click `devtrail-0.5.0-beta.0.vsix`.
 3. Confirm the file downloads.
 4. Install it in VS Code:
 
 ```bash
-code --install-extension ~/Downloads/devtrail-0.4.0-beta.0.vsix --force
+code --install-extension ~/Downloads/devtrail-0.5.0-beta.0.vsix --force
 ```
 
 5. Open VS Code.
-6. Run `DevTrail: Open Setup Guide`.
+6. Confirm setup opens automatically. You can also run `DevTrail: Open Setup Guide`.
 
 If the download fails or shows a 404, stop and do not share the beta link yet.
 
@@ -72,7 +72,7 @@ If the page has broken links, stop and fix them before sharing.
 3. Add the release link:
 
 ```text
-https://github.com/landon-personal/devtrail/releases/tag/v0.4.0-beta.0
+https://github.com/landon-personal/devtrail/releases/tag/v0.5.0-beta.0
 ```
 
 4. Send it to 3-5 trusted testers.

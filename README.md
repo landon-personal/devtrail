@@ -38,7 +38,7 @@ DevTrail is not on the VS Code Marketplace yet. Beta testers install it from a `
 4. Run `Extensions: Install from VSIX...`.
 5. Choose the downloaded `.vsix`.
 6. Reload VS Code if prompted.
-7. Run `DevTrail: Open Setup Guide`.
+7. The setup guide should open automatically. You can also run `DevTrail: Open Setup Guide`.
 
 Command-line install:
 
