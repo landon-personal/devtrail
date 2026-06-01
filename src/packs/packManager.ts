@@ -22,7 +22,7 @@ interface KnowledgePackFile {
 }
 
 export async function listAvailablePacks(context: vscode.ExtensionContext): Promise<PackWithInstallStatus[]> {
-  const registryPacks = await loadPackRegistry(context);
+  const registryPacks = await safeLoadPackRegistry(context);
   const installedPackIds = new Set(getInstalledPackIds(context));
 
   return registryPacks.map((pack) => ({
@@ -96,9 +96,18 @@ async function findAvailablePack(
   context: vscode.ExtensionContext,
   packId: string
 ): Promise<PackRegistryEntry | undefined> {
-  const availablePacks = await loadPackRegistry(context);
+  const availablePacks = await safeLoadPackRegistry(context);
 
   return availablePacks.find((pack) => pack.id === packId);
+}
+
+async function safeLoadPackRegistry(context: vscode.ExtensionContext): Promise<PackRegistryEntry[]> {
+  try {
+    return await loadPackRegistry(context);
+  } catch {
+    console.warn("DevTrail pack registry could not be loaded.");
+    return [];
+  }
 }
 
 async function loadKnowledgeTermsFromPack(

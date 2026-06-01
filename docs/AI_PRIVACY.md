@@ -62,3 +62,10 @@ DevTrail also blocks AI requests from `.env` files, common lockfiles, `node_modu
 When AI mode is enabled, DevTrail opens a loading view immediately so VS Code does not look frozen. If the request takes longer than `devtrail.ai.slowWarningMs` (default `5000`), DevTrail shows a friendly slow warning with two choices: keep waiting, or switch to a local explanation. DevTrail does not automatically send more code or start a second AI request.
 
 If the user cancels the progress notification, chooses local explanation, formatting fails, or the AI request fails, DevTrail replaces the loading view with the local explanation.
+
+## Reliability Notes
+
+- If AI is enabled but no API key is configured, DevTrail offers to open the API key command and uses local explanations.
+- If the selection is too large, DevTrail keeps it local and asks the user to select a smaller section for AI.
+- If the selection looks like it may contain secrets, DevTrail keeps it local.
+- If AI formatting or the AI request fails, DevTrail uses local explanations and does not show raw model output.

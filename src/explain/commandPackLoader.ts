@@ -15,9 +15,24 @@ export async function loadCommandPacks(
     .map((pack) => pack.localPath)
     .filter((localPath) => localPath.endsWith("commands.json"));
 
-  const packs = await Promise.all(packPaths.map((packPath) => loadCommandPack(context, packPath)));
+  const packs = await Promise.all(packPaths.map((packPath) => safeLoadCommandPack(context, packPath)));
 
   return packs.flatMap((pack) => pack.commands);
+}
+
+async function safeLoadCommandPack(
+  context: vscode.ExtensionContext,
+  relativePackPath: string
+): Promise<CommandPackFile> {
+  try {
+    return await loadCommandPack(context, relativePackPath);
+  } catch {
+    console.warn("DevTrail command pack could not be loaded.");
+    return {
+      tool: "unknown",
+      commands: []
+    };
+  }
 }
 
 async function loadCommandPack(

@@ -1,6 +1,6 @@
 # DevTrail Tester Feedback Guide
 
-Use this guide when asking early testers to try DevTrail.
+Use this guide when asking beta testers to try DevTrail.
 
 ## Who Should Test DevTrail
 
@@ -32,6 +32,8 @@ Use this guide when asking early testers to try DevTrail.
 - Did packs make sense as local learning add-ons?
 - Did Manage Packs make installed and suggested status clear?
 - Did optional AI feel clearly opt-in?
+- Did error messages feel calm and easy to act on?
+- Did DevTrail fall back locally when AI or packs were unavailable?
 - What should DevTrail explain next?
 
 ## What Not To Share
@@ -63,4 +65,3 @@ Ask testers to share:
 - A tiny fake code sample if needed
 - What they expected
 - What happened instead
-

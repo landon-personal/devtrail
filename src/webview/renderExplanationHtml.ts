@@ -31,9 +31,7 @@ export function renderExplanationHtml(explanation: ExplanationResult, selectedCo
   <p>${escapeHtml(explanation.summary)}</p>
 
   <h2>Line-by-line explanation</h2>
-  <ol>
-    ${explanation.lineByLine.map((line) => `<li>${escapeHtml(line)}</li>`).join("")}
-  </ol>
+  ${renderOrderedList(explanation.lineByLine, "DevTrail did not find specific line patterns here yet. Try selecting a smaller block or installing a related pack.")}
 
   <h2>Key vocabulary</h2>
   <ul>
@@ -41,9 +39,7 @@ export function renderExplanationHtml(explanation: ExplanationResult, selectedCo
   </ul>
 
   <h2>Common beginner confusion</h2>
-  <ul>
-    ${explanation.beginnerConfusions.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
-  </ul>
+  ${renderUnorderedList(explanation.beginnerConfusions, "No common beginner confusion was detected for this selection.")}
 
   <h2>Selected code</h2>
   <pre><code>${escapeHtml(selectedCode)}</code></pre>
@@ -135,6 +131,26 @@ function renderNotice(explanation: ExplanationResult): string {
   return `<p class="notice">${escapeHtml(explanation.notice)}</p>`;
 }
 
+function renderOrderedList(items: string[], emptyMessage: string): string {
+  if (items.length === 0) {
+    return `<p class="muted">${escapeHtml(emptyMessage)}</p>`;
+  }
+
+  return `<ol>
+    ${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+  </ol>`;
+}
+
+function renderUnorderedList(items: string[], emptyMessage: string): string {
+  if (items.length === 0) {
+    return `<p class="muted">${escapeHtml(emptyMessage)}</p>`;
+  }
+
+  return `<ul>
+    ${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+  </ul>`;
+}
+
 function escapeHtml(value: string): string {
   return value
     .replace(/&/g, "&amp;")
@@ -186,6 +202,10 @@ function renderBaseStyles(): string {
       border-radius: 6px;
       color: var(--vscode-descriptionForeground);
       padding: 10px;
+    }
+
+    .muted {
+      color: var(--vscode-descriptionForeground);
     }
   `;
 }

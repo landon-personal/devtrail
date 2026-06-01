@@ -12,7 +12,7 @@ It is built for people learning JavaScript, TypeScript, React, Git, npm, and mod
 - Instructors, tutors, and mentors helping people read code
 - Developers who want local, short explanations inside VS Code
 
-## Current Alpha Features
+## Current Beta Features
 
 - `DevTrail: Open Setup Guide`: guided onboarding for experience level, project scan, suggested packs, and first steps.
 - `DevTrail: Explain Selection`: explains selected JavaScript, TypeScript, React, or JSX code.
@@ -27,7 +27,7 @@ It is built for people learning JavaScript, TypeScript, React, Git, npm, and mod
 
 ## Install From VSIX
 
-DevTrail is not on the VS Code Marketplace yet. Alpha testers install it from a `.vsix` file.
+DevTrail is not on the VS Code Marketplace yet. Beta testers install it from a `.vsix` file.
 
 1. Download the latest DevTrail `.vsix` from GitHub Releases.
 2. Open VS Code.
@@ -40,7 +40,7 @@ DevTrail is not on the VS Code Marketplace yet. Alpha testers install it from a 
 Command-line install:
 
 ```sh
-code --install-extension devtrail-0.3.0-alpha.0.vsix
+code --install-extension devtrail-0.4.0-beta.0.vsix
 ```
 
 ## First Run
@@ -114,7 +114,7 @@ DevTrail does not include telemetry, analytics, accounts, cloud sync, payments, 
 
 ## Bundled Packs
 
-Packs teach DevTrail about languages, tools, and libraries. In this alpha, packs are bundled with the extension and installed into local VS Code extension state.
+Packs teach DevTrail about languages, tools, and libraries. In this beta, packs are bundled with the extension and installed into local VS Code extension state.
 
 Current bundled packs:
 
@@ -162,7 +162,7 @@ Run in VS Code:
 
 ## Current Limitations
 
-- This is an alpha. Expect rough edges.
+- This is a beta. Expect some rough edges while tester feedback is still being collected.
 - Local code explanations are pattern-based, not full program analysis.
 - React/JSX local explanations cover common patterns, not every valid React structure.
 - Pack installation only enables bundled JSON/content packs.
@@ -177,8 +177,8 @@ Run in VS Code:
 - Expand bundled packs with more framework-specific beginner patterns.
 - Add focused automated tests around explanation and pack logic.
 - Add safer remote pack distribution later with schema validation, checksums, signatures, and trust metadata.
-- Prepare public alpha screenshots and demo GIFs.
-- Consider Marketplace publishing after public alpha feedback.
+- Prepare public beta screenshots and demo GIFs.
+- Consider Marketplace publishing after beta feedback.
 
 ## Report Issues
 
@@ -201,5 +201,4 @@ Useful reports include:
 
 Do not include API keys, `.env` values, private source code, school/private data, access tokens, passwords, or other secrets. Use a tiny fake code example whenever possible.
 
-See [docs/TESTER_FEEDBACK.md](docs/TESTER_FEEDBACK.md) for safe alpha feedback guidance.
-
+See [docs/TESTER_FEEDBACK.md](docs/TESTER_FEEDBACK.md) for safe beta feedback guidance.

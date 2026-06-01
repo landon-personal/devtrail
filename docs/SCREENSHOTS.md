@@ -1,6 +1,6 @@
 # DevTrail Screenshot Guidance
 
-Do not auto-generate screenshots for the alpha. Capture them manually so private code, API keys, `.env` values, school/private data, and secrets are not visible.
+Do not auto-generate screenshots for the beta. Capture them manually so private code, API keys, `.env` values, school/private data, and secrets are not visible.
 
 Use fake or sample code when possible.
 
@@ -59,4 +59,3 @@ Use fake or sample code when possible.
 - Check no private source code is visible.
 - Check no private school, customer, or personal data is visible.
 - Check no API key status dialogs show actual keys.
-

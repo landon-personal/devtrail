@@ -1,6 +1,6 @@
 # DevTrail Pack Security
 
-DevTrail v0.2 alpha packs are bundled with the extension and loaded from local JSON/content files. There is no internet pack download flow yet.
+DevTrail v0.4 beta packs are bundled with the extension and loaded from local JSON/content files. There is no internet pack download flow yet.
 
 ## Current Rules
 
@@ -13,7 +13,7 @@ DevTrail v0.2 alpha packs are bundled with the extension and loaded from local J
 
 ## Not Built Yet
 
-Remote pack downloads are intentionally out of scope for v0.2 alpha. Before public remote packs exist, DevTrail should add:
+Remote pack downloads are intentionally out of scope for v0.4 beta. Before public remote packs exist, DevTrail should add:
 
 - Checksums for downloaded pack files
 - Signatures or another publisher verification system

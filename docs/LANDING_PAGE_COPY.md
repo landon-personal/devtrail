@@ -1,5 +1,7 @@
 # DevTrail Landing Page Copy
 
+This is a copy reference. The current beta landing page lives in `docs/index.html`.
+
 ## Headline
 
 Understand your code without leaving VS Code.
@@ -23,7 +25,7 @@ DevTrail is local-first. Local explanations, project scans, command explanations
 
 ## Download Button Text
 
-Download DevTrail Alpha
+Download DevTrail Beta
 
 ## GitHub Button Text
 
@@ -37,6 +39,6 @@ View on GitHub
 4. Select the downloaded DevTrail file.
 5. Run `DevTrail: Open Setup Guide`.
 
-## Alpha Warning
+## Beta Warning
 
-DevTrail is in public alpha. Some explanations will be incomplete or imperfect. Please report confusing, vague, or incorrect explanations so the local packs and patterns can improve.
+DevTrail is in beta. Some explanations will be incomplete or imperfect. Please report confusing, vague, or incorrect explanations so the local packs and patterns can improve.

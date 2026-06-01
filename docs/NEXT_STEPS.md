@@ -38,7 +38,7 @@
 - Core JavaScript fallback after resetting installed packs
 - No workspace and no `package.json` warning paths
 
-## Wait Until After v0.2 Alpha
+## Wait Until After v0.4 Beta
 
 - Real pack marketplace or download system
 - Remote pack checksum and signature verification

@@ -106,7 +106,7 @@ export function renderSetupGuideHtml(model: SetupGuideModel, nonce: string): str
     </div>
     <div class="card">
       <h3>What packs are</h3>
-      <p>Packs teach DevTrail about the languages, tools, and libraries your project uses. In this alpha, packs are bundled and install locally.</p>
+      <p>Packs teach DevTrail about the languages, tools, and libraries your project uses. In this beta, packs are bundled and install locally.</p>
     </div>
     <div class="card">
       <h3>AI is optional</h3>
@@ -141,7 +141,7 @@ export function renderSetupGuideHtml(model: SetupGuideModel, nonce: string): str
   <p class="muted">DevTrail watches this workspace's <code>package.json</code> and can refresh recommended packs when project dependencies change.</p>
 
   <h2>Recommended packs</h2>
-  <p class="muted">Packs teach DevTrail about the languages, tools, and libraries your project uses. In this alpha, packs are bundled with DevTrail and install locally.</p>
+  <p class="muted">Packs teach DevTrail about the languages, tools, and libraries your project uses. In this beta, packs are bundled with DevTrail and install locally.</p>
   <div class="callout">
     Install the packs that match your project first. You can change them later with <code>DevTrail: Manage Packs</code>.
   </div>

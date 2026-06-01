@@ -2,30 +2,37 @@
 
 ## What Changed
 
-- Bumped DevTrail to `0.3.0-alpha.0`.
-- Polished the public alpha landing page at `docs/index.html`.
-- Updated README so a new tester can understand what DevTrail is, how to install from VSIX, how to run the setup guide, how optional AI works, what stays local, limitations, roadmap, and issue reporting.
-- Added website maintenance docs in `docs/WEBSITE.md`.
-- Added GitHub issue templates:
-  - `.github/ISSUE_TEMPLATE/bug_report.md`
-  - `.github/ISSUE_TEMPLATE/feature_request.md`
-  - `.github/ISSUE_TEMPLATE/explanation_feedback.md`
-- Added `docs/RELEASE_CHECKLIST.md`.
-- Added `docs/SCREENSHOTS.md`.
-- Added `docs/RELEASE_NOTES_v0.3.0-alpha.0.md`.
-- Updated `.vscodeignore` so `.github/**` does not ship in the VSIX.
+- Bumped DevTrail to `0.4.0-beta.0`.
+- Completed a reliability pass across Command Palette commands.
+- Confirmed command titles and command IDs are consistent between `package.json` and extension registration.
+- Improved friendly fallback handling for:
+  - no workspace
+  - no active editor
+  - no selected text
+  - unsupported command explanations
+  - AI enabled but no key
+  - AI request failure
+  - AI formatting issues
+  - oversized selections
+  - sensitive-looking selections
+  - missing or invalid `package.json`
+  - missing or malformed bundled pack registry/command pack JSON
+- Improved wording in explanation webviews, Manage Packs, AI formatting diagnostics, and user-facing messages.
+- Updated README and beta docs for accuracy.
+- Added `docs/RELEASE_NOTES_v0.4.0-beta.0.md`.
 
 ## Verification Results
 
 - `npm run compile`: passed.
+- `node out/ai/parseAIExplanation.test.js`: passed.
 - `npm run package`: passed.
-- Generated VSIX: `devtrail-0.3.0-alpha.0.vsix`.
+- Generated VSIX: `devtrail-0.4.0-beta.0.vsix`.
 - VSIX install: passed.
 
 Installed with:
 
 ```sh
-code --install-extension /Users/landon/devtrail/devtrail-0.3.0-alpha.0.vsix --force
+code --install-extension /Users/landon/devtrail/devtrail-0.4.0-beta.0.vsix --force
 ```
 
 ## Exact Next Manual Steps
@@ -33,19 +40,19 @@ code --install-extension /Users/landon/devtrail/devtrail-0.3.0-alpha.0.vsix --fo
 After final verification, manually test in VS Code:
 
 1. Run `DevTrail: Open Setup Guide`.
-2. Run `DevTrail: Manage Packs`.
-3. Open `App.jsx` and test hover explanations.
-4. Run `DevTrail: Explain Selection` with AI disabled.
-5. If AI is configured, run `DevTrail: Test AI Formatting`.
-6. Preview `docs/index.html` locally.
-7. Check links listed in `docs/WEBSITE.md`.
-8. Capture screenshots listed in `docs/SCREENSHOTS.md`.
+2. Run `DevTrail: Explain Selection` with no editor, no selected text, and a valid small selection.
+3. Run `DevTrail: Explain Command` with `git status`, an empty command, and an unsupported command.
+4. Run `DevTrail: Manage Packs`.
+5. Run `DevTrail: Analyze Project` with no workspace, no `package.json`, invalid `package.json`, and valid `package.json`.
+6. If AI is configured, run `DevTrail: Test AI Formatting`.
+7. Test AI enabled with no API key.
+8. Test oversized and sensitive-looking selection fallbacks.
 9. Follow `docs/RELEASE_CHECKLIST.md` before any GitHub prerelease.
 
-## Repo Visibility
+## Blockers
 
-No repo visibility change was performed. GitHub CLI reported `landon-personal/devtrail` visibility as `PRIVATE`.
+No blockers found during compile, parser test, package, or install.
 
 ## Public Actions
 
-No commit, push, GitHub release, GitHub Pages enablement, marketplace publish, or repo visibility change was performed during the v0.3 local prep pass.
+No commit, push, GitHub release, GitHub Pages enablement, marketplace publish, or repo visibility change was performed during the v0.4 local prep pass.

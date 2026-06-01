@@ -24,12 +24,18 @@ Use this before creating a GitHub prerelease. Do not publish to the VS Code Mark
 - Use the Manage Packs reset flow.
 - Open `App.jsx` and confirm hover explanations work.
 - Run `DevTrail: Explain Selection` with AI disabled.
+- Test no active editor and no selected text messages.
+- Test unsupported command explanation.
 - Run `DevTrail: Test AI Formatting` if AI is configured.
 - Test AI slow warning by lowering `devtrail.ai.slowWarningMs`.
+- Test AI enabled with no API key.
 - Test sensitive selection fallback with fake secret-looking text.
+- Test oversized selection fallback.
 - Run `DevTrail: Explain Command` with `git status`.
 - Run `DevTrail: Analyze Project`.
+- Test no workspace, no `package.json`, and invalid `package.json` paths.
 - Run `DevTrail: Refresh Project Scan`.
+- Confirm Manage Packs still opens when no suggested packs are available.
 
 ## Documentation Checks
 
@@ -71,4 +77,3 @@ Only after explicit approval:
 - Make the repo public.
 - Enable GitHub Pages.
 - Share the landing page.
-

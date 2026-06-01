@@ -101,14 +101,14 @@ export function activate(context: vscode.ExtensionContext): void {
     const editor = vscode.window.activeTextEditor;
 
     if (!editor) {
-      vscode.window.showErrorMessage("DevTrail needs an open code file before it can explain a selection.");
+      vscode.window.showErrorMessage("Open a code file first, then run DevTrail: Explain Selection.");
       return;
     }
 
     const selectedCode = editor.document.getText(editor.selection);
 
     if (selectedCode.trim().length === 0) {
-      vscode.window.showWarningMessage("Select some code first, then run DevTrail: Explain Selection.");
+      vscode.window.showWarningMessage("Highlight a small piece of code first, then run DevTrail: Explain Selection.");
       return;
     }
 
@@ -152,7 +152,7 @@ export function activate(context: vscode.ExtensionContext): void {
     }
 
     if (enteredCommand.trim().length === 0) {
-      vscode.window.showWarningMessage("Type a terminal command first, then DevTrail can explain it.");
+      vscode.window.showWarningMessage("Type a terminal command first, then DevTrail can explain it locally.");
       return;
     }
 
@@ -174,7 +174,7 @@ export function activate(context: vscode.ExtensionContext): void {
     const workspaceFolder = getCurrentWorkspaceFolder();
 
     if (!workspaceFolder) {
-      vscode.window.showErrorMessage("Open a project folder before asking DevTrail to analyze it.");
+      vscode.window.showErrorMessage("Open a project folder first, then run DevTrail: Analyze Project.");
       return;
     }
 
@@ -193,7 +193,7 @@ export function activate(context: vscode.ExtensionContext): void {
     const workspaceFolder = getCurrentWorkspaceFolder();
 
     if (!workspaceFolder) {
-      vscode.window.showErrorMessage("Open a project folder before asking DevTrail to refresh recommendations.");
+      vscode.window.showErrorMessage("Open a project folder first, then run DevTrail: Refresh Project Scan.");
       return;
     }
 
@@ -212,7 +212,7 @@ export function activate(context: vscode.ExtensionContext): void {
     const editor = vscode.window.activeTextEditor;
 
     if (!editor) {
-      vscode.window.showInformationMessage("DevTrail does not see an active editor right now.");
+      vscode.window.showInformationMessage("Open a file first, then DevTrail can show its language mode.");
       return;
     }
 
@@ -304,7 +304,7 @@ export function activate(context: vscode.ExtensionContext): void {
     const aiSettings = getAISettings();
 
     if (!aiSettings.enabled) {
-      vscode.window.showWarningMessage("Enable DevTrail AI explanations before running the formatting test.");
+      vscode.window.showWarningMessage("Enable DevTrail AI explanations before running the formatting test. Local explanations still work without AI.");
       return;
     }
 
@@ -354,7 +354,7 @@ export function activate(context: vscode.ExtensionContext): void {
           error: diagnosticResult.error
         });
         vscode.window.showErrorMessage(
-          `DevTrail AI formatting test failed: ${getAIFormattingFailureLabel(diagnosticResult.error?.category ?? "unknown-ai-formatting-failure")}.`
+          `DevTrail AI formatting needs attention: ${getAIFormattingFailureLabel(diagnosticResult.error?.category ?? "unknown-ai-formatting-failure")}. Local explanations still work.`
         );
         return;
       }
@@ -387,7 +387,7 @@ export function activate(context: vscode.ExtensionContext): void {
           error
         });
         vscode.window.showErrorMessage(
-          `DevTrail AI formatting test failed: ${getAIFormattingFailureLabel(error.category)}.`
+          `DevTrail AI formatting needs attention: ${getAIFormattingFailureLabel(error.category)}. Local explanations still work.`
         );
         return;
       }
@@ -403,7 +403,7 @@ export function activate(context: vscode.ExtensionContext): void {
           diagnostics: []
         });
         vscode.window.showWarningMessage(
-          `DevTrail AI formatting test failed: ${getAIFormattingFailureLabel("unknown-ai-formatting-failure")}.`
+          `DevTrail AI formatting needs attention: ${getAIFormattingFailureLabel("unknown-ai-formatting-failure")}. Local explanations still work.`
         );
       }
     }
@@ -439,7 +439,7 @@ export function activate(context: vscode.ExtensionContext): void {
     const workspaceFolder = getCurrentWorkspaceFolder();
 
     if (!workspaceFolder) {
-      vscode.window.showErrorMessage("Open a project folder before asking DevTrail to install suggested packs.");
+      vscode.window.showErrorMessage("Open a project folder first, then DevTrail can install suggested packs.");
       return;
     }
 
@@ -644,8 +644,8 @@ function renderAIFormattingDiagnosticsHtml(model: AIFormattingDiagnosticPanelMod
   </style>
 </head>
 <body>
-  <h1>DevTrail AI Formatting Diagnostics</h1>
-  <p>This diagnostic is for the hardcoded formatting test only. It does not show API keys or project code.</p>
+  <h1>DevTrail AI Formatting Check</h1>
+  <p>This check uses a tiny built-in sample. It does not show API keys or project code, and local explanations still work if AI formatting needs attention.</p>
 
   <h2>Environment</h2>
   <ul>
@@ -655,12 +655,12 @@ function renderAIFormattingDiagnosticsHtml(model: AIFormattingDiagnosticPanelMod
     <li><strong>Actual structured model:</strong> ${escapeDiagnosticHtml(model.actualStructuredModel)}</li>
     <li><strong>AI enabled:</strong> ${model.aiEnabled ? "true" : "false"}</li>
     <li><strong>API key exists:</strong> ${model.apiKeyExists ? "true" : "false"}</li>
-    <li><strong>Final category:</strong> ${escapeDiagnosticHtml(getAIFormattingFailureLabel(model.error?.category ?? "unknown-ai-formatting-failure"))}</li>
-    <li><strong>Validation reason:</strong> ${escapeDiagnosticHtml(model.error?.validationFailureReason ?? "none")}</li>
+    <li><strong>Result category:</strong> ${escapeDiagnosticHtml(getAIFormattingFailureLabel(model.error?.category ?? "unknown-ai-formatting-failure"))}</li>
+    <li><strong>Formatting detail:</strong> ${escapeDiagnosticHtml(model.error?.validationFailureReason ?? "none")}</li>
   </ul>
 
   <h2>Attempts</h2>
-  ${model.diagnostics.length > 0 ? model.diagnostics.map(renderAIFormattingAttemptHtml).join("") : "<p>No response diagnostics were available.</p>"}
+  ${model.diagnostics.length > 0 ? model.diagnostics.map(renderAIFormattingAttemptHtml).join("") : "<p>No response details were available for this check.</p>"}
 </body>
 </html>`;
 }
@@ -673,8 +673,8 @@ function renderAIFormattingAttemptHtml(attempt: AIExplanationAttemptDiagnostic):
     <ul>
       <li><strong>Request method:</strong> ${escapeDiagnosticHtml(attempt.requestMethod)}</li>
       <li><strong>Model used:</strong> ${escapeDiagnosticHtml(attempt.model)}</li>
-      <li><strong>Failure category:</strong> ${escapeDiagnosticHtml(attempt.failureCategory ? getAIFormattingFailureLabel(attempt.failureCategory) : "none")}</li>
-      <li><strong>Validation reason:</strong> ${escapeDiagnosticHtml(attempt.validationFailureReason ?? "none")}</li>
+      <li><strong>Result category:</strong> ${escapeDiagnosticHtml(attempt.failureCategory ? getAIFormattingFailureLabel(attempt.failureCategory) : "none")}</li>
+      <li><strong>Formatting detail:</strong> ${escapeDiagnosticHtml(attempt.validationFailureReason ?? "none")}</li>
       <li><strong>message.parsed exists:</strong> ${shape?.messageParsedExists ? "true" : "false"}</li>
       <li><strong>message.content exists:</strong> ${shape?.messageContentExists ? "true" : "false"}</li>
       <li><strong>typeof message.content:</strong> ${escapeDiagnosticHtml(shape?.messageContentType ?? "undefined")}</li>
@@ -744,7 +744,7 @@ async function applyPackAction(context: vscode.ExtensionContext, message: PackAc
     const wasInstalled = await installPack(context, message.packId);
 
     if (!wasInstalled) {
-      vscode.window.showWarningMessage("DevTrail could not install that bundled pack.");
+      vscode.window.showWarningMessage("DevTrail could not find that bundled pack locally. The rest of DevTrail still works.");
     }
 
     return;
@@ -777,7 +777,7 @@ async function explainSelectedCode(
 
   if (selectedCode.length > aiSettings.maxSelectedCharacters) {
     vscode.window.showWarningMessage(
-      "This selection is pretty large. DevTrail will explain it locally for now. Try selecting a smaller section for AI."
+      "This selection is large. DevTrail will explain it locally for now. Try selecting a smaller section for AI."
     );
     renderLocalExplanation("This selection was larger than the AI size limit, so DevTrail used the local explanation instead.");
     return;
@@ -787,7 +787,7 @@ async function explainSelectedCode(
 
   if (!safetyCheck.allowed) {
     vscode.window.showWarningMessage(
-      "This selection may contain secrets. DevTrail will not send it to AI. Try selecting only the code you want explained."
+      "This selection may contain secrets. DevTrail will not send it to AI. Try selecting only the non-secret code you want explained."
     );
     renderLocalExplanation("This selection may contain secrets, so DevTrail used the local explanation instead.");
     return;
@@ -939,12 +939,12 @@ async function runAIExplanationWithProgress(
       }
 
       if (error instanceof AIExplanationFormatError) {
-        finishWithLocal("AI formatting failed, so DevTrail used the local explanation instead.");
+        finishWithLocal("AI formatting did not come back in the expected shape, so DevTrail used the local explanation instead.");
         return;
       }
 
       vscode.window.showWarningMessage("DevTrail could not get an AI explanation right now, so it used the local explanation instead.");
-      finishWithLocal();
+      finishWithLocal("AI was unavailable, so DevTrail used the local explanation instead.");
     }
   );
 
@@ -1098,11 +1098,11 @@ function isAIWaitActionMessage(message: unknown): message is AIWaitActionMessage
 
 function showProjectScanProblem(status: "noPackageJson" | "invalidPackageJson"): void {
   if (status === "noPackageJson") {
-    vscode.window.showWarningMessage("DevTrail could not find package.json in this project folder yet.");
+    vscode.window.showWarningMessage("DevTrail could not find package.json in this project folder. You can still use hovers, Explain Selection, and Explain Command.");
     return;
   }
 
-  vscode.window.showErrorMessage("DevTrail found package.json, but the file is not valid JSON right now.");
+  vscode.window.showErrorMessage("DevTrail found package.json, but it is not valid JSON right now. Fix the file, then run the scan again.");
 }
 
 async function showWelcomePromptOnce(context: vscode.ExtensionContext): Promise<void> {

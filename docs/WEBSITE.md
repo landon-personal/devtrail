@@ -1,6 +1,6 @@
 # DevTrail Website Notes
 
-`docs/index.html` is a simple static landing page for the public alpha.
+`docs/index.html` is a simple static landing page for the beta.
 
 ## Preview Locally
 
@@ -42,7 +42,7 @@ When approved:
 
 ## Updating Download Links
 
-For each new alpha:
+For each new beta or prerelease:
 
 1. Update the direct `.vsix` link in `docs/index.html`.
 2. Keep the latest release button pointed at:
@@ -53,4 +53,3 @@ For each new alpha:
 
 3. Run through `docs/RELEASE_CHECKLIST.md`.
 4. Do not enable Pages or make the repo public without explicit approval.
-

@@ -1,12 +1,13 @@
-# DevTrail v0.2 Public Alpha
+# DevTrail v0.4 Public Beta Notes
 
-## What Alpha Means
+## What Beta Means
 
-DevTrail v0.2 alpha is an early build for manual testing and feedback. It is useful enough to try, but it is not a polished marketplace release yet.
+DevTrail v0.4 beta is a tester-focused build for feedback before any wider public or Marketplace launch. It is useful enough to try, but explanations can still be incomplete or imperfect.
 
 Expect:
 
 - improved local explanations for common JavaScript and React/JSX patterns
+- friendlier fallback and error handling
 - customizable Beginner, Learning, and Advanced explanation levels
 - rough edges in real-world code
 - richer starter pack content
@@ -15,7 +16,7 @@ Expect:
 
 ## Recommended Testers
 
-Good alpha testers include:
+Good beta testers include:
 
 - beginner JavaScript and React learners
 - bootcamp students

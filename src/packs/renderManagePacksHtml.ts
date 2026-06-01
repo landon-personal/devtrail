@@ -115,7 +115,7 @@ export function renderManagePacksHtml(model: ManagePacksModel, nonce: string): s
 <body>
   <h1>DevTrail Packs</h1>
   <p>Packs teach DevTrail about the languages, tools, and libraries your project uses.</p>
-  <p class="muted">In v0.2 alpha, packs are bundled with the extension and install locally into DevTrail state. JavaScript Basics remains available as a safe fallback even after resetting installed packs.</p>
+  <p class="muted">In this beta, packs are bundled with the extension and install locally into DevTrail state. JavaScript Basics remains available as a safe fallback even after resetting installed packs.</p>
   <div class="toolbar">
     <span class="status installed">${installedCount} installed</span>
     <span class="status">${model.packs.length - installedCount} not installed</span>
@@ -164,7 +164,7 @@ function renderPacks(
   suggestionsByPackId: Map<string, string>
 ): string {
   if (packs.length === 0) {
-    return "<div class=\"empty\"><p>No bundled packs were found.</p></div>";
+    return "<div class=\"empty\"><p>DevTrail could not load bundled packs right now.</p><p class=\"muted\">Local JavaScript fallback explanations still work. Try reloading VS Code or reinstalling the extension if this keeps happening.</p></div>";
   }
 
   return packs.map((pack) => {

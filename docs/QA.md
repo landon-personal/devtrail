@@ -1,6 +1,6 @@
 # DevTrail Manual QA
 
-Use this checklist before a v0.2 alpha build.
+Use this checklist before a v0.4 beta build.
 
 ## Setup Guide
 
@@ -116,6 +116,21 @@ Use this checklist before a v0.2 alpha build.
 6. Repeat with `git add .`, `npm install`, and `npm run dev`.
 7. Enter an unsupported command and confirm DevTrail says it does not have a local explanation yet and suggests supported examples.
 
+## Friendly Error And Fallback Paths
+
+1. Close active editors and run `DevTrail: Explain Selection`.
+2. Confirm DevTrail asks you to open a code file first.
+3. Open a code file, select nothing, and run `DevTrail: Explain Selection`.
+4. Confirm DevTrail asks you to highlight a small piece of code.
+5. Run `DevTrail: Show Current Language Mode` with no active editor.
+6. Confirm DevTrail asks you to open a file first.
+7. Run `DevTrail: Explain Command`, submit an empty command, and confirm DevTrail asks for a terminal command.
+8. Enter an unsupported command and confirm the webview suggests supported examples.
+9. Run `DevTrail: Analyze Project` with no workspace and confirm the message says to open a project folder first.
+10. Open a folder without `package.json`, run `DevTrail: Analyze Project`, and confirm DevTrail explains that hovers, Explain Selection, and Explain Command still work.
+11. Temporarily break `package.json` in a test project, run `DevTrail: Analyze Project`, and confirm DevTrail asks you to fix JSON and scan again.
+12. Confirm Manage Packs still opens even if no project-specific suggestions are available.
+
 ## Optional AI Explanations
 
 1. Make sure `devtrail.ai.enabled` is `false`.
@@ -133,7 +148,7 @@ Use this checklist before a v0.2 alpha build.
 13. Confirm the test webview says `Source: AI explanation`.
 14. Confirm diagnostics, if shown, list request method `chat.completions.parse` for the strict structured attempt and actual structured model `gpt-4o-mini` unless overridden.
 15. If strict structured output fails but JSON fallback succeeds, confirm the explanation still opens and shows `Structured parsing failed, but DevTrail recovered with JSON fallback.`
-16. Confirm the test does not show `AI formatting failed`.
+16. Confirm the test does not show raw model output or private code.
 17. If the formatting test fails, read the diagnostics panel and note only the safe category DevTrail shows: SDK method unsupported, API rejected schema, parsed output missing, JSON parse failed, validation failed, model refused or empty output, or unknown AI formatting failure.
 18. Diagnostic details are safe only for the hardcoded test sample: SDK version, configured normal model, configured structured model, actual structured model, AI enabled, whether an API key exists, request method, `message.parsed`/`message.content` presence, finish reason, refusal presence, and a short `message.content` preview for the hardcoded sample if JSON fallback runs.
 19. Do not test AI explanations on real project code yet if `DevTrail: Test AI Formatting` fails.
@@ -165,7 +180,7 @@ Use this checklist before a v0.2 alpha build.
 43. Confirm DevTrail falls back locally and shows `AI explanation was canceled, so DevTrail used the local explanation instead.`
 44. Set `devtrail.ai.maxSelectedCharacters` to `20`.
 45. Select more than 20 characters and run `DevTrail: Explain Selection`.
-46. Confirm DevTrail warns that the selection is pretty large and uses the local explanation.
+46. Confirm DevTrail warns that the selection is large and uses the local explanation.
 47. Reset `devtrail.ai.maxSelectedCharacters` to `6000`.
 48. Set `devtrail.ai.speedMode` to `fast` and remove any explicit `devtrail.ai.model` override.
 49. Run `DevTrail: Explain Selection` and confirm the AI path still works. This mode uses `gpt-5-nano` for the fastest responses.
